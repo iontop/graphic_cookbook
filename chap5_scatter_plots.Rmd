@@ -1,0 +1,55 @@
+---
+title: "chap5_scatter_plots"
+author: "J.H AHN"
+date: '2022 1 6 '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(gcookbook)
+library(tidyverse)
+library(patchwork)
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+<br>
+### 4.1 Making a basic scatter plot
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<br>
+<br>
+<br>
+
+
+**END**
+
+
+<br>
+<br>
+<br>
