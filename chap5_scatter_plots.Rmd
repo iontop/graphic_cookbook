@@ -13,29 +13,977 @@ library(patchwork)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 <br>
-### 4.1 Making a basic scatter plot
+### 5.1 Making a basic scatter plot
+<br>
+
+```{r}
+heightweight
+
+```
+
+
+```{r}
+heightweight[, c("ageYear", "heightIn")]
+
+```
+
+<br>
+scatter plot의 점 모양은 default는 solid circles(#16)이다.  
+shape과 size는 변경이 가능하다.  
+<br>
+```{r fig_5_1}
+heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn)) + 
+  geom_point()
+
+
+```
+
+
+<br>
+```{r fig_5_2}
+sca52_1 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn)) + 
+  geom_point(shape = 21)
+
+sca52_2 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn)) + 
+  geom_point(size = 3)
+
+sca52_1 + sca52_2
+
+```
+
+
+<br>
+*.png등으로 비트맵 이미지를 출력해야 할 경우 'shape = 16'을 사용하면 윤곽선 부분이 계단처럼 나타나는 현상이 보일 때가 있다.  
+이럴 때는 'shape = 19'를 사용하면 보다 부드러운 외곽선 처리가 된 solid circle을 사용할 수 있다.  
+<br>
+```{r fig_5_3}
+sca53_1 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn)) + 
+  geom_point(shape = 16, size = 5)
+
+sca53_2 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn)) + 
+  geom_point(shape = 19, size = 5)
+
+sca53_1 + sca53_2
+
+```
+
+
+<br>
+<br>
+### 5.2 Grouping data points by a variable using shape or color
+<br>
+
+<br>
+```{r}
+heightweight[, c("sex", "ageYear", "heightIn")]
+```
+
+
+<br>
+grouping할 변수는 범주형이어야 한다.  
+즉 다른 말로 factor나 character vector여야 한다.  
+만약 numeric value라면 grouping하기 전에 factor로 변환해야 한다.  
+<br>
+```{r fig_5_4}
+fig541 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn, color = sex)) +
+  geom_point()
+
+fig542 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn, shape = sex)) +
+  geom_point()
+
+fig541 + fig542
+
+```
+
+
+<br>
+color와 shape은 동시에 변경도 가능하고 manual로 원하는 모양과 색으로 변경도 가능하다.  
+<br>
+```{r fig_5_5}
+fig551 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn, color = sex, shape = sex)) +
+  geom_point()
+
+fig552 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn, color = sex, shape = sex)) +
+  geom_point() +
+  scale_shape_manual(values = c(1,2)) +
+  scale_color_brewer(palette = "Set1")
+
+fig551 + fig552
+
+```
+
+
+<br>
+<br>
+### 5.3 Using different point shapes
+<br>
+
+<br>
+shape 1-14까지는 point shape이기 때문에 outline만 있고, 15-20까지는 solid, 21-25는 outline과 fill을 함께 가지고 있어 별도로 조정이 가능하다.  
+1-20까지는 점 전체가 color속성으로 조정이 가능하고, 21-25는 outline은 color로, fill은 fill로 조절이 가능하다.  
+<br>
+```{r fig_5_6}
+fig561 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn)) +
+  geom_point(shape = 3)
+
+fig562 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn, shape = sex)) +
+  geom_point() +
+  scale_shape_manual(values = c(1,4))
+
+fig561 + fig562
+
+```
+
+
+<br>
+outline과 color를 별도로 조절가능한 특성을 이용해서 fill로 하나의 변수를 나타내고, color로 다른 변수를 나타내는 plot도 그릴 수 있다.  
+예를 들어 몸무게가 100lb를 기준으로 구분하는 scatter plot을 아래와 같이 그려볼 수 있다. 
+<br>
+```{r fig_5_8}
+hw <- heightweight
+hw <- hw %>% 
+  mutate(weightGroup = case_when(weightLb < 100 ~ "< 100", TRUE ~ ">= 100"))
+
+hw %>% 
+  ggplot(aes(x = ageYear, y = heightIn, shape = sex, fill = weightGroup)) +
+  geom_point() +
+  scale_shape_manual(values = c(21,24)) +
+  scale_fill_manual(values = c(NA, "#000000"),
+                    guide = guide_legend(override.aes = list(shape = 21)))
+
+```
+
+
+<br>
+책에서는 'guide = guide_legend(override.aes = list(shape = 21))'를 입력하도록 되어 있는데 넣으나 안 넣으나 동일한 결과가 나타남.  
 <br>
 
 
+<br>
+<br>
+### 5.4 Mapping a continuous variable to color or size
+
+<br>
+x,y로 표시되는 위치에 대한 차이는 쉽게 인지하지만, size나 color로 표시된 차이는 쉽게 인지할 수 없다.  
+size나 color의 작은 차이는 인지하여 식별하기 어렵기 때문에 읽는 사람의 해석의 정확도가 낮아진다.  
+따라서 상대적으로 덜 중요한 값을 size나 color로 구분하도록 배치하여야 한다.
+<br>
+```{r fig_5_9}
+fig591 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn, color = weightLb)) +
+  geom_point()
+
+fig592 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn, size = weightLb)) +
+  geom_point()
+
+fig591 + fig592
+
+```
+
+<br>
+size로 맵핑해는 경우 잘못 읽을 가능성이 높다.  가장 큰 점의 면적은 가장 작은 점의 면적의 36배이지만 실제 나타내는 값의 차이는 그보다 훨씬 작다.  
+default size는 1-6mm인데 `scale_size_continuous(range = c(2,5))`를 이용하여 2-5mm로 바꿀 수 있다.  
+하지만 점의 size와 면적이 비례적으로 변하는 것은 아니다.  
+<br>
+color의 경우 #21-#25 shape을 적용할 경우 fill과 color 두 가지 속성을 이용할 수 있다. 
+#21-#25를 사용하는 경우 밝은 색의 solid와 구별되는 outline 색을 이용하면 유용하게 사용 할 수 있다. 
+<br>
+책에서는 `guide = guide_legend()`가 있는데 이것도 넣으나 안 넣으나 차이를 발견하지 못함.  
+일단 책에 있어서 그대로 넣어둠.  
+<br>
+```{r fig_5_10}
+fig5101 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn, fill = ageYear)) +
+  geom_point(shape = 21) +
+  scale_fill_gradient(low = "#000000", high = "#FFFFFF")
+
+fig5102 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn, size = ageYear)) +
+  geom_point(shape = 21) +
+  scale_fill_gradient(low = "#000000", high = "#FFFFFF", breaks = 12:17,
+                      guide = guide_legend())
+
+fig5101 + fig5102
+
+```
+
+
+<br>
+연속형 변수와 이산형 변수를 동시에 맵핑할 수도 있다.  
+`scale_size()`는 인식하기 쉽게 적절하게 크기를 변경해주는 기능을 한다.  
+<br>
+```{r fig_5_11}
+heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn, size = weightLb, color = sex)) +
+  geom_point(alpha = 0.5) +
+  scale_size_area() +
+  scale_color_brewer(palette = "Set1")
+
+```
+
+
+<br>
+<br>
+### 5.5 Dealing with overplotting
+
+<br>
+```{r fig_5_12}
+sp <- ggplot(diamonds, aes(x = carat, y = price))
+
+sp + geom_point()
+
+```
+
+
+<br>
+지나치게 많은 데이터로 인해 그리는데도 시간이 많이 걸리고, 데이터를 정확하게 식별하기도 어렵다.  
+이를 해결하기 위해 투명도(alpha)를 주어 좀 더 식별이 용이하게 만든다.  
+<br>
+```{r fig_5_13}
+fig5131 <- sp + geom_point(alpha = 0.1)
+fig5132 <- sp + geom_point(alpha = 0.01)
+
+fig5131 + fig5132
+
+
+```
+
+
+<br>
+또 다른 방법으로는 사각형에 점의 밀도에 따른 색으로 표현하는 방법(*bin*)이 있다.  
+`stat_bin_2d()`를 이용하는데, default로 x, y 방향으로 각각 30개 그룹으로 30x30 = 900개의 bins가 만들어진다.  
+필요에 따라 bins의 수는 조절할 수 있다.  
+<br>
+```{r fig_5_14}
+fig5141 <- 
+  sp + stat_bin2d()
+
+fig5142 <- 
+  sp + stat_bin2d(bins = 50) +
+  scale_fill_gradient(low = "#ADD8E6", high = "#FF0000", limits = c(0,6000))
+
+fig5141 + fig5142
 
 
 
+```
+
+
+<br>
+또 다른 방법으로는 사각형 대신 육각형을 쓰는 방법이다.
+이것을 사용하기 위해서는 사전에 `hexbin`package를 설치해야 한다.  
+<br>
+```{r fig_5_15}
+fig5151 <- 
+  sp + stat_binhex() +
+  scale_fill_gradient(low = "#ADD8E6", high = "#FF0000", limits = c(0,8000))
+
+fig5152 <- 
+  sp + stat_binhex() +
+  scale_fill_gradient(low = "#ADD8E6", high = "#FF0000", 
+                      breaks = c(0, 250, 500, 1000, 2000, 4000, 6000),
+                      limits = c(0,6000))
+
+fig5151 + fig5152
+
+
+```
+
+
+<br>
+
+```{r fig_5_16}
+sp1 <- ggplot(ChickWeight, aes(x = Time, y = weight))
+
+fig5161 <- 
+  sp1 + geom_point() +
+  labs(subtitle = "data with a discrete x var")
+
+fig5162 <- 
+  sp1 + geom_jitter() +
+  labs(subtitle = "jitter")
+
+fig5163 <- 
+  sp1 + geom_jitter(width = 0.5, height = 0) +
+  labs(subtitle = "jittered horizontally only")
+
+fig5161 + fig5162 + fig5163
+
+```
+
+
+<br>
+데이터가 하나만 이산형일 경우에는 box plot을 그리는 것이 더 좋다.  
+`ChickWeights`data에서 x축은 개념적으로는 이산형인데 저장된 데이터는 숫자형이다.  
+그래서 ggplot()은 각 박스가 어느 그룹인지 알지 못하기 때문에 `aes(group =...)`으로 정해주지 않으면 그래프를 그리지 못한다.  
+<br>
+```{r fig_5_17}
+fig5171 <- 
+  sp1 + geom_boxplot(aes(group = Time))
+
+fig5172 <- 
+  sp1 + geom_boxplot()
+
+fig5171 + fig5172
+
+```
+
+
+<br>
+<br>
+### 5.6 Adding fitted regression model lines
+<br>
+
+```{r fig_5_18}
+fig518 <- ggplot(heightweight, aes(x = ageYear, y = heightIn))
+
+fig5181 <- 
+  fig518 + 
+  geom_point() +
+  geom_smooth(method = lm) +
+  labs(subtitle = "base")
+
+fig5182 <- 
+  fig518 + 
+  geom_point() +
+  geom_smooth(method = lm, level = 0.99) +
+  labs(subtitle = "setting level")
+
+fig5183 <- 
+  fig518 + 
+  geom_point() +
+  geom_smooth(method = lm, se = FALSE) +
+  labs(subtitle = "only line")
+
+fig5184 <- 
+  fig518 + 
+  geom_point(color = "gray60") +
+  geom_smooth(method = lm, se = FALSE, color = "#000000") +
+  labs(subtitle = "change color")
+
+fig5181 + fig5182 + fig5183 + fig5184 + plot_layout(ncol = 2)
+
+
+```
+
+
+<br>
+```{r fig_5_19}
+fig5191 <- 
+  fig518 + 
+  geom_point(color = "gray60") +
+  geom_smooth(method = lm) +
+  labs(subtitle = "lm fit")
+
+fig5192 <- 
+  fig518 + 
+  geom_point(color = "gray60") +
+  geom_smooth(method = loess) +
+  labs(subtitle = "loess fit")
+
+fig5191 + fig5192
+
+```
+
+
+<br>
+Logistic regression model fit에도 사용할 수 있음.  
+`MASS` library에 있는 `biopsy`data를 사용해서 예제를 만들어 봄.  
+```{r}
+library(MASS)
+
+biopsy
+
+```
+
+
+```{r}
+b <- 
+  biopsy %>% 
+  mutate(classn = case_when(class == "benign" ~ 0, TRUE ~ 1))
+
+b
+
+```
+
+<br>
+책에서는 `method = glm`으로 설정했고 그게 맞는 것 같은데 책과 동일한 결과를 얻기 위해서는 "loess" method를 설정해야 함. 
+버전이 변경되어 그런 것 같음.  
+"glm"에 "family = binomial"로 적용해야 하는데 그 방법이 바뀐 듯 함.  
+`geom_smooth()`에 `method.args = list(family = ...)`방식으로 입력해야 함.  
+<br>
+```{r fig_5_20}
+b %>% 
+  ggplot(aes(x = V1, y = classn)) +
+  geom_jitter(width = 0.3, height = 0.06, alpha = 0.4, shape = 21) +
+  geom_smooth(method = "glm", 
+              method.args = list(family= binomial))
+
+```
+
+
+<br>
+```{r fig_5_21}
+sps1 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn, color = sex)) +
+  geom_point(alpha = 0.4) +
+  scale_color_brewer(palette = "Set1") +
+  geom_smooth()
+
+sps2 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn, color = sex)) +
+  geom_point(alpha = 0.4) +
+  scale_color_brewer(palette = "Set1") +
+  geom_smooth(method = lm, se = FALSE)
+
+sps1 + sps2
+  
+```
+
+
+<br>
+<br>
+### 5.7 Adding fitted lines from an existing model
+<br>
+
+<br>
+보통 fitted model을 만드는 가장 간단한 방법은 `stat_smooth()`를 사용하는 것이다.  
+하지만 때로는 우리가 만든 fitted model를 그래프에 넣어야 할 때도 있다.
+이는 우리가 만든 fitted model이 제대로 되었는지 확인하기에 좋은 방법이다.  
+<br>
+예제로 heightIn을 예측변수로 사용하여 ageYear에 대한 quadratic model (`lm()`을 이용)을 만들어 볼 것이다.  
+그 다음에 `predict()`를 사용해서 예측값을 찾을 것이다.
+<br>
+```{r}
+model <- 
+  lm(
+    formula = heightIn ~ ageYear + I(ageYear^2),
+    data = heightweight
+  )
+
+model
+
+```
+
+
+```{r}
+# Create a data frame with ageYear column, interpolating across range
+xmin <- min(heightweight$ageYear)
+xmax <- max(heightweight$ageYear)
+predicted <- data.frame(ageYear = seq(xmin, xmax, length.out = 100))
+
+# Calculated predicted values of heightIn
+predicted$heightIn <- predict(model, predicted)
+
+predicted
+
+```
+
+
+```{r}
+heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn)) +
+  geom_point(color = "gray40")+
+  geom_line(data = predicted)
+
+```
+
+
+<br>
+`predictvals()`함수를 만들어 모델로부터 선을 추가하는 일을 간단하게 할 수 있게 만든다.  
+앞서 한 것처럼 변수명을 찾아서 예측변수의 범위를 정하고 예측변수와 예측값을 데이터 프레임으로 반환한다는 것을 간단하게 해 주는 함수이다.  
+함수가 반환한 데이터는 `geom_line()`에 넣으면 된다.
+<br>
+```{r}
+# Given a model, predict values of yvar from xvar
+# This supports one predictor and one predicted variable
+# xrange: If NULL, determine the x range from the model object. If a vector with
+#         two numbers, use those as the min and max of the prediction range.
+# samples: Number of samples across the x range.
+# ...: Further argument to be passed to predict()
+predictvals <- function(model, xvar, yvar, xrange = NULL, samples = 100, ...) {
+  
+  # If xrange isn't passed in, determine xrange from the models.
+  # Different ways of extracting the x range, depending on model type
+  if(is.null(xrange)) {
+    if(any(class(model) %in% c("lm", "glm")))
+      xrange <- range(model$model[[xvar]])
+    else if(any(class(model) %in% c("loess")))
+      xrange <- range(model$x)
+  }
+  
+  newdata <- data.frame(x = seq(xrange[1], xrange[2], length.out = samples))
+  names(newdata) <- xvar
+  newdata[[yvar]] <- predict(model, newdata = newdata, ...)
+  newdata
+}
+
+```
+
+
+<br>
+```{r}
+modlinear <- lm(heightIn ~ ageYear, heightweight)
+modlinear
+```
 
 
 
+```{r}
+modloess <- loess(heightIn ~ ageYear, heightweight)
+modloess
+```
 
 
+```{r}
+lm_predicted <- predictvals(modlinear, "ageYear", "heightIn")
+lm_predicted
+```
 
 
+```{r}
+loess_predicted <- predictvals(modloess, "ageYear", "heightIn")
+loess_predicted
+```
 
 
+```{r fig_5_22}
+fig5221 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn)) +
+  geom_point(color = "gray40")+
+  geom_line(data = predicted, size = 1) +
+  labs(subtitle = "quadratic prediction line from an lm object")
+
+fig5222 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn)) +
+  geom_point(color = "gray40") +
+  geom_line(data = lm_predicted, color = "#8B0000", size = 1) +
+  geom_line(data = loess_predicted, color = "#191970", size = 1) +
+  labs(subtitle = "prediction lines from linear(red) & LOESS(blue) model")
+
+fig5221 + fig5222
+
+```
 
 
+<br>
+만든 `predictvals()`를 logistic regression에도 적용해 본다.  
+<br>
+```{r}
+fitlogistic <- glm(classn ~ V1, b, family = binomial)
+
+fitlogistic
+
+```
 
 
+```{r}
+glm_predicted <- predictvals(fitlogistic, "V1", "classn", type = "response")
+
+glm_predicted
+
+```
 
 
+```{r fig_5_23}
+b %>% 
+  ggplot(aes(x = V1, y = classn)) +
+  geom_jitter(width = 0.3, height = 0.08, alpha = 0.4, shape = 21) +
+  geom_line(data = glm_predicted, color = "#1177FF", size = 1)
 
+```
+
+
+<br>
+<br>
+### 5.8 Adding fitted lines from multiple existing model
+<br>
+
+<br>
+```{r}
+make_model <- function(data) {
+  lm(heightIn ~ ageYear, data)
+}
+
+```
+
+```{r}
+library(plyr)
+
+models <- 
+  heightweight %>% 
+  dlply("sex", .fun = make_model)
+
+models
+
+```
+
+
+```{r}
+predvals <- ldply(models, .fun = predictvals, xvar = "ageYear", yvar="heightIn")
+
+predvals
+
+```
+
+<br>
+```{r fig_5_24}
+fig_5241 <- 
+heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn, color = sex)) +
+  geom_point() +
+  geom_line(data = predvals)
+
+fig_5242 <- 
+heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn, color = sex)) +
+  geom_point() +
+  geom_line(data = predvals) + 
+  facet_wrap(~sex, ncol = 1)
+
+fig_5241 + fig_5242
+
+```
+
+
+<br>
+```{r}
+predvals <- ldply(models, .fun = predictvals, 
+                  xvar = "ageYear", yvar = "heightIn",
+                  xrange = range(heightweight$ageYear))
+predvals
+
+```
+
+
+<br>
+`predvals`를 계산할 때 xrange를 맞춰 male의 X축 range를 늘려 female과 동일하게 맞춤.  
+<br>
+```{r fig_5_25}
+heightweight %>%
+  ggplot(aes(x = ageYear, y = heightIn, color = sex)) +
+  geom_point() +
+  geom_line(data = predvals)
+
+
+```
+
+
+<br>
+<br>
+### 5.9 Adding annotations with model coefficients
+<br>
+
+```{r}
+model <- lm(heightIn ~ ageYear, heightweight)
+
+summary(model)
+
+```
+
+
+<br>
+```{r fig_5_26}
+pred <- predictvals(model, "ageYear", "heightIn")
+
+fig5261 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn)) +
+  geom_point() +
+  geom_line(data = pred) +
+  labs(subtitle = "plain text") +
+  annotate("text", label = "r^2=0.42", x = 16, y = 52)
+
+fig5262 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn)) +
+  geom_point() +
+  geom_line(data = pred) +
+  labs(subtitle = "math expression") +
+  annotate("text", label = "r^2==0.42", parse = TRUE, x = 16, y = 52)
+
+fig5261 + fig5262
+
+
+```
+
+
+<br>
+```{r}
+eqn <- 
+  as.character(as.expression(
+    substitute(italic(y) == a + b * italic(x) * "," ~~ italic(r)^2 ~ "=" ~ r2,
+               list(a = format(coef(model)[1], digits = 3),
+                    b = format(coef(model)[2], digits = 3),
+                    r2 = format(summary(model)$r.squared, digits = 2)))
+  ))
+
+eqn
+
+```
+
+
+```{r}
+parse(text = eqn)
+
+```
+
+
+```{r fig_5_27}
+heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn)) +
+  geom_point() +
+  geom_line(data = pred) +
+  annotate("text", label = eqn, parse=TRUE, x = Inf, y = -Inf, 
+           vjust = -1, hjust = 1.5)
+
+
+```
+
+
+<br>
+<br>
+### 5.10 Adding marginal rugs to a scatter plot
+<br>
+
+<br>
+```{r}
+faithful
+
+```
+
+<br>
+marginal rug plot을 그리기 위해서는 1차원 scatter plot이 필수적이다.  
+marginal rug가 크게 효과적이지 않은 data set도 있다.  
+아래 예시에서는 rug line이 overplotting된 곳이 많아 이를 해결하기 위해서는 `geom_rug()`에 jitter 속성을 사용하는 것도 하나의 방법이다.  
+<br>
+
+```{r fig_5_28}
+faithful %>% 
+  ggplot(aes(x = eruptions, y = waiting)) +
+  geom_point() +
+  geom_rug()
+
+
+```
+
+
+<br>
+```{r fig_5_29}
+faithful %>% 
+  ggplot(aes(x = eruptions, y = waiting)) +
+  geom_point() +
+  geom_rug(position = "jitter")
+
+
+```
+
+
+<br>
+<br>
+### 5.11 Labeling points in a scatter plot
+<br>
+
+<br>
+주석을 붙일 텍스트가 한두개 정도면 `annotate()`를 사용하면 되지만, 많은 수의 label을 붙여야 한다면 각 label의 위치를 일일이 조정하면서 넣을 수가 없기 때문에 `geom_text()`를 써서 한 번에 label을 출력하도록 한다.  
+<br>
+```{r}
+countries
+
+```
+
+
+```{r}
+countries %>% 
+  subset(Year == 2009 & healthexp > 2000)
+
+```
+
+
+```{r fig_5_30}
+fig530 <- 
+  countries %>% 
+  subset(Year == 2009 & healthexp > 2000) %>% 
+  ggplot(aes(x = healthexp, y = infmortality)) +
+  geom_point()
+
+fig5301 <- 
+  fig530 +
+  annotate("text", x = 4350, y = 5.4, label = "Canada") +
+  annotate("text", x = 7400, y = 6.8, label = "USA")
+
+fig5302 <- 
+  fig530 +
+  geom_text(aes(label = Name), nudge_y = 0.15, size = 3)
+
+fig5301 + fig5302
+  
+
+```
+
+
+<br>
+**vjust=0**은 점과 같은 수준으로 각 글자의 baseline을 맞춘겠다는 뜻이고, **vjust=1**은 점과 글자의 위쪽을 맞춘다는 뜻이다.  
+하지만 이것만으로 충분하지 않을 때는 y mapping값을 더하거나 빼는 방법으로 같은 효과를 만들어 낼 수 있다. 
+<br>
+```{r fig_5_31}
+fig5311 <- 
+  fig530 +
+  geom_text(aes(label = Name), size = 3, vjust = 0) +
+  labs(subtitle = "vjust = 0")
+
+fig5312 <- 
+  fig530 +
+  geom_text(aes(y = infmortality+0.1, label=Name), 
+            size = 3, vjust = 0)+
+  labs(subtitle = "extra added to y")
+
+fig5311 + fig5312
+
+```
+
+
+<br>
+<br>
+### 5.12 Creating a balloon plot
+<br>
+
+<br>
+ballon plot을 만들기 위해서는 `geom_point()`와 `scale_size_area()`를 조합하여 사용한다.  
+```{r}
+cdat <- subset(countries, Year == 2009 &
+                 Name %in% c("Canada", "Ireland","United Kingdom",
+                             "United States", "New Zealand", "Iceland",
+                             "Japan", "Luxembourg", "Netherlands",
+                             "Switzerland"))
+cdat
+
+```
+
+
+<br>
+```{r fig_5_34}
+fig534 <- 
+  cdat %>% 
+  ggplot(aes(x = healthexp, y = infmortality, size = GDP)) +
+  geom_point(shape = 21, color = "#000000", fill = "#FFF8DC")
+
+fig5341 <- 
+  fig534 +
+  scale_size_area(max_size = 15)
+
+fig534 + fig5341
+
+```
+
+
+<br>
+또한 ballon plot은 grid위에 categorical한 정보를 표현할 수도 있다.  
+<br>
+```{r}
+HairEyeColor
+
+```
+
+
+```{r}
+hec <- 
+  HairEyeColor[,,"Male"] + HairEyeColor[,,"Female"]
+
+hec
+
+```
+
+
+```{r}
+hec <-
+  reshape2::melt(hec, value.name = "count")
+
+hec
+
+```
+
+
+<br>
+아래 예제에서 원 아래에 label을 위치시키기 위해 몇 가지 트릭을 사용했다.  
+첫번째로 vjust=1로 설정하여 y coordinate와 글자의 위쪽을 맞춘 후, 각 원의 아래에 위치 할 수 있도록 y corrdinate를 계산 값으로 넣었다. 
+<br>
+```{r fig_5_35}
+hec %>% 
+  ggplot(aes(x = Eye, y = Hair)) +
+  geom_point(aes(size = count), shape = 21, color = "#000000", fill = "#FFF8DC") +
+  scale_size_area(max_size = 20, guide = FALSE) +
+  geom_text(aes(y = as.numeric(Hair)-sqrt(count)/22,
+                label = count),
+            vjust = 1, color = "gray60", size = 3)
+
+
+```
+
+
+<br>
+<br>
+### 5.13 Making a scatter plot matrix
+<br>
+
+```{r}
+c2009 <- 
+  countries %>% 
+  subset(Year == 2009, select=c(Name, GDP, laborrate, healthexp, infmortality))
+
+c2009
+
+```
+
+
+<br>
+scatter matrix를 만드는 가장 쉬운 방법은 `pairs()`를 사용하는 것이다.  
+<br>
+```{r fig_5_36}
+pairs(c2009[,2:5])
+
+```
+
+
+<br>
+책에서는 함수를 만들어서 다양한 scatter matrix를 만드는데, 현재는 `GGally` package의 `ggpair()`를 이용하면 손쉽게 다양한 scatter matrix를 만들 수 있다.  
+<br>
+```{r fig_5_37}
+library(GGally)
+
+ggpairs(c2009[,2:5])
+
+```
 
 
 
