@@ -1,0 +1,493 @@
+---
+title: "chap7_annotations"
+author: "J.H AHN"
+date: '2022 1 10 '
+output: html_document
+---
+```{r setup, include=FALSE}
+library(gcookbook)
+library(tidyverse)
+library(patchwork)
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+<br>
+### 7.1 Adding text annotations
+<br>
+
+<br>
+`annotate()`는 여러가지 geometric object를 추가할 수 있다.  
+아래는 `geom = "text"`를 사용한 예이다.  
+<br>
+```{r fig_7_1}
+faithful %>% 
+  ggplot(aes(x = eruptions, y = waiting)) +
+  geom_point() +
+  annotate("text", x = 3, y = 48, label = "Group1") +
+  annotate("text", x = 4.5, y = 66, label = "Group2")
+
+```
+
+
+<br>
+```{r fig_7_2}
+faithful %>% 
+  ggplot(aes(x = eruptions, y = waiting)) +
+  geom_point() +
+  annotate("text", x = 3, y = 48, label = "Group1", family = "serif",
+           fontface = "italic", color = "#8B0000", size = 3) +
+  annotate("text", x = 4.5, y = 66, label = "Group2", family = "serif",
+           fontface = "italic", color = "#8B0000", size = 3)
+
+```
+
+
+
+<br>
+개별 text object를 추가하기 원할 때 `geom_text()` **사용하지 않도록 주의해야 한다.**  
+`annotate(geom = "text")`는 하나의 text object를 추가하는데 반해, `geom_text()`는 데이터를 기초로 다수의 text object를 생성한다.  
+만약 `geom_text()`를 사용했다면 text는 같은 위치에 한 데이터당 하나씩 매우 많이 겹쳐져서 출력될 것이다.  
+<br>
+```{r fig_7_3}
+faithful %>% 
+  ggplot(aes(x = eruptions, y = waiting)) +
+  geom_point() +
+  annotate("text", x = 3, y = 48, label = "Group1", alpha = 0.1) +
+  geom_text(x = 4.5, y = 66, label = "Group2", alpha = 0.1)
+
+```
+
+
+
+<br>
+만약 축이 연속형이라면 **Inf**, **-Inf**를 사용하여 주석을 plotting영역 모서리에 위치 시킬 수 있다.  
+**hjust**, **vjust**를 사용하여 글자의 상대위치를 조정할 수도 있고 default로 두면 글자는 모서리에 중간맞춤으로 위치한다.  
+<br>
+```{r fig_7_4}
+faithful %>% 
+  ggplot(aes(x = eruptions, y = waiting)) +
+  geom_point() +
+  annotate("text", x = -Inf, y = Inf, label = "Upper left", 
+           hjust = -0.2, vjust = 2) +
+  annotate("text", x = mean(range(faithful$eruptions)), y = -Inf,
+           label = "Bottom middle", vjust = -0.4)
+
+
+```
+
+
+<br>
+<br>
+### 7.2 Using mathmatical expressions in annotations
+<br>
+
+<br>
+주석에 수식을 넣고 싶을 때는 `annotate(geom = "text")`에 `parse = TURE`를 설정하면 된다.  
+아래 예제에는 -3에서 3까지의 Normal distribution을 `dnorm()`으로 만들어 plotting을 하고 그 위에 수식을 넣는 것이다.  
+`dnorm()`은 데이터, 평균값, 표준편차를 입력하여 Normal distribution density를 반환하는 함수이다.  
+<br>
+```{r fig_7_5}
+nord <- ggplot(data.frame(x = c(-3,3)), aes(x = x)) + stat_function(fun = dnorm)
+
+nord + annotate("text", x = 2, y = 0.3, parse = TRUE,
+                label = "frac(1, sqrt(2*pi))*e^{-x^2/2}")
+
+```
+
+
+<br>
+ggplot2에서 `parse = TRUE`를 이용하여 수식을 적을 때는 *plotmath*와 *expression (base R)* format과 비슷하다.  
+일반 text와 혼합해서 사용하려면 따옴표 안에 작은 따옴표로 표시한다.  
+두 변수를 나란하게 출력하려면 둘 사이에 *를 넣어야 한다.  
+(곱하기 부호를 보이기 위해 사용해야 할 때는 %*%이다.)    
+<br>
+```{r fig_7_6}
+nord + annotate("text", x = 0, y = 0.05, parse = TRUE, size = 4,
+                label = "'function: ' * y == frac(1, sqrt(2*pi))*e^{-x^2/2}")
+
+
+```
+
+
+<br>
+<br>
+### 7.3 Adding lines
+<br>
+
+<br>
+그래프에 수평선(`geom_hline()`), 수직선(`geom_vline()`) 혹은 사선(`geom_abline()`)을 넣는 예시는 아래와 같다.    
+<br>
+```{r fig_7_7}
+fig_707 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn, color = sex)) +
+  geom_point()
+
+fig_7071 <- 
+  fig_707 + 
+  geom_hline(yintercept = 60) + 
+  geom_vline(xintercept = 14) +
+  labs(subtitle = "add horizontal and vertical lines")
+
+fig_7072 <- 
+  fig_707 +
+  geom_abline(intercept = 37.4, slope = 1.75) +
+  labs(subtitle = "add angled lines")
+
+
+fig_7071 + fig_7072
+
+```
+
+
+<br>
+```{r}
+hw_mean_book <- heightweight %>% plyr::ddply("sex", summarise, heightIn = mean(heightIn))
+
+hw_mean_book
+
+```
+
+
+
+```{r}
+hw_mean <- heightweight %>% group_by(sex) %>% summarise(heightIn = mean(heightIn))
+
+hw_mean
+
+```
+
+
+```{r fig_7_8}
+fig_707 + 
+  geom_hline(aes(yintercept = heightIn, color = sex), data = hw_mean,
+             linetype = "dashed", size = 1)
+
+
+```
+
+
+<br>
+만약 축이 이산형이 아닌 연속형이라면 교차점(intercepts)를 변수명으로 정의할 수 없고 숫자를 입력해야 한다.  
+만약 축이 factor라면 level에 해당하는 숫자를 입력하면 된다.  
+숫자형 교차점을 직접 입력할 수도 있고, `which(level(...))`을 이용하여 계산할 수도 있다.  
+<br>
+```{r fig_7_9}
+pg <- 
+  PlantGrowth %>% 
+  ggplot(aes(x = group, y = weight)) +
+  geom_point()
+
+fig7091 <- pg + geom_vline(xintercept = 2)
+
+fig7092 <- pg + geom_vline(xintercept = which(levels(PlantGrowth$group) == "ctrl"))
+
+fig7091 + fig7092
+
+```
+
+
+<br>
+<br>
+### 7.4 Adding line segments and arrows
+<br>
+
+<br>
+`annotate("segment")`를 사용는 예를 살펴보자.  
+<br>
+```{r fig_7_10}
+p <- 
+  climate %>% subset(Source == "Berkeley") %>% 
+  ggplot(aes(x = Year, y = Anomaly10y)) +
+  geom_line()
+
+p + annotate("segment", x = 1950, xend = 1980, y = -0.25, yend = -0.25)
+
+
+```
+
+
+<br>
+line segment에 `grid` package의 `arrow()`를 사용하여 화살표를 넣을 수도 있다.  
+화살표는 angle = 30, length = 0.2inches가 default이다.  
+만약 하나 혹은 양쪽 축이 이산형이면 x나 y 위치는 categorical items이 가지는 coordinate value를 사용해야 한다.  
+<br>
+```{r fig_7_11}
+p + 
+  annotate("segment", x = 1850, xend = 1820, y = -0.8, yend = -0.95,
+             color = "#191970", size = 2, arrow = arrow()) +
+  annotate("segment", x = 1950, xend = 1980, y = -0.25, yend = -0.25,
+           arrow = arrow(ends = "both", angle = 90, length = unit(0.2, "cm")))
+
+
+```
+
+
+<br>
+<br>
+### 7.5 Adding a shaded rectangle
+<br>
+
+<br>
+`annotate("rect")`를 사용한다.
+<br>
+```{r fig_7_12}
+p + 
+  annotate("rect", xmin = 1950, xmax = 1980, ymin = -1, ymax = 1,
+           alpha = 0.1, fill = "#191970")
+
+```
+
+
+<br>
+<br>
+### 7.6 Highlighting an item
+<br>
+
+<br>
+```{r}
+pg <- 
+  PlantGrowth %>% 
+  mutate(hl = case_when(group == "trt2" ~ "yes", TRUE ~ "no"))
+
+pg
+
+```
+
+
+<br>
+```{r fig_7_13}
+pg %>% 
+  ggplot(aes(x = group, y = weight, fill = hl)) +
+  geom_boxplot() +
+  scale_fill_manual(values = c("gray85", "#FFDDCC"), guide = "none")
+
+```
+
+
+<br>
+hl열을 만들지 않고 곧바로 group열의 값을 이용해서 그려도 동일한 결과를 얻을 수 있음.
+```{r}
+pg %>% 
+  ggplot(aes(x = group, y = weight, fill = group)) +
+  geom_boxplot() +
+  scale_fill_manual(values = c("gray85", "gray85", "#FFDDCC"), guide = "none")
+
+
+```
+
+
+<br>
+<br>
+### 7.7 Adding error bars
+<br>
+
+<br>
+`geom_errorbar()`에 `ymin`과 `ymax`를 맵핑하여 만들 수 있다.  
+errorbar를 그리는 것은 bar graphs나 line graph와 동일하다.  
+<br>
+```{r fig_7_14}
+ce <- cabbage_exp %>% subset(Cultivar == "c39")
+
+fig_7141 <- 
+  ce %>% 
+  ggplot(aes(x = Date, y = Weight)) +
+  geom_bar(stat = "identity", fill = "#FFFFFF", color = "#000000") +
+  geom_errorbar(aes(ymin = Weight - se, ymax = Weight + se), width = 0.2)
+
+fig_7142 <- 
+  ce %>% 
+  ggplot(aes(x = Date, y = Weight)) +
+  geom_line(aes(group = 1)) +
+  geom_point(size = 3) +
+  geom_errorbar(aes(ymin = Weight - se, ymax = Weight + se), width = 0.2)
+
+fig_7141 + fig_7142
+
+```
+
+
+
+<br>
+```{r}
+cabbage_exp
+
+```
+
+
+<br>
+`geom_bar()`의 dodge width는 0.9가 default이므로 error bar도 같은 width를 가지도록 명시해야 한다.  
+만약 dodge width를 정해주지 않으면 error bar는 항상 bar의 폭보다 작게 그려진다.   
+<br>
+```{r fig_7_15}
+fig_7151 <- 
+  cabbage_exp %>% 
+  ggplot(aes(x = Date, y = Weight, fill = Cultivar)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  geom_errorbar(aes(ymin = Weight - se, ymax = Weight + se),
+                position = "dodge", width = 0.2) +
+  labs(subtitle = "Bad: dodge width no specified")
+
+fig_7152 <- 
+  cabbage_exp %>% 
+  ggplot(aes(x = Date, y = Weight, fill = Cultivar)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  geom_errorbar(aes(ymin = Weight - se, ymax = Weight + se),
+                position = position_dodge(0.9), 
+                width = 0.2) +
+  labs(subtitle = "Good: dodge width set to same as bar width (0.9)")
+
+fig_7151 + fig_7152
+
+```
+
+
+<br>
+line graph를 그릴 때는 error bar는 선이나 점과 다른 색을 적용한다면 error bar를 먼저 그려야 한다.  
+그래야 error bar가 선이나 점 아래에 위치하기 때문이다.  
+추가적으로 error bar를 정렬하기 위해서 모든 geometric element를 dodge 시켜야 한다.  
+<br>
+```{r fig_7_16}
+pd <- position_dodge(0.3) # Save the dodge spec because we use it repeatedly
+
+cabbage_exp %>% 
+  ggplot(aes(x = Date, y = Weight, color = Cultivar, group = Cultivar)) +
+  geom_errorbar(aes(ymin = Weight - se, ymax = Weight + se),
+                width = 0.2, size = 0.25, color = "#000000", position = pd) +
+  geom_line(position = pd) +
+  geom_point(position = pd, size = 2.5)
+
+
+```
+
+
+<br>
+<br>
+### 7.8 Adding annotations to indivisual facets
+<br>
+
+<br>
+각 facet에 주석을 달기위해서는 `geom_text()`를 사용한다.   
+<br>
+```{r fig_7_17}
+# base plot
+p <- 
+  mpg %>% 
+  ggplot(aes(x = displ, y = hwy)) +
+  geom_point() +
+  facet_wrap(~ drv)
+
+# data frame with labels for each facet
+f_labels <- data.frame(drv = c("4", "f", "r"), label = c("4wd", "Front", "Rear"))
+
+fig_7171 <- p + geom_text(x = 6, y = 40, aes(label = label), data = f_labels) +
+  labs(subtitle = "using geom_text()")
+
+# If you use annotate(), the label will appear in all facets
+fig_7172 <- p + annotate("text", x = 6, y = 42, label = "label text") +
+  labs(subtitle = "using annotate()")
+
+fig_7171 / fig_7172
+
+```
+
+
+<br>
+주석이 아닌 각 facet의 제목으로 넣고 싶다면 아래와 같이 `labeller = as_labeller(...)`를 사용하는 것이 더 효과적임.  
+<br>
+```{r}
+mpg %>% 
+  ggplot(aes(x = displ, y = hwy)) +
+  geom_point() +
+  facet_wrap(~ drv, labeller = as_labeller(c('4' = "4wd", 'f' = "Front", 'r' = "Rear")))
+
+```
+
+
+
+<br>
+각 facet별로 다른 주석을 보이는 기능이 유용한 경우는 각 facet별로 식이나 통계값을 나타낼 때이다.  
+이렇게 하기 위해서는 사전에 필요한 값을 반환하는 함수를 만들어 두는 것이 필요하다.  
+아래 예시는 각 facet별 회귀식과 결정계수($R^2$)를 나타내는 방법을 보여준다.  
+`sprintf()`는 지정된 포맷에 순서대로 숫자를 입력하여 출력하는 함수이다.  
+<br>
+```{r}
+lm_labels <- function(dat) {
+  mod <- lm(hwy ~ displ, data = dat)
+  formula <- sprintf("italic(y) == %.2f %+.2f * italic(x)",
+                     round(coef(mod)[1], 2), round(coef(mod)[2],2))
+  r <- cor(dat$displ, dat$hwy)
+  r2 <- sprintf("italic(R^2) == %.2f", r^2)
+  data.frame(formula=formula, r2=r2, stringsAsFactors = FALSE)
+}
+
+```
+
+```{r}
+lables_book <- plyr::ddply(mpg, "drv", lm_labels)
+
+lables_book
+
+```
+
+
+
+```{r}
+labels <- mpg %>% group_by(drv) %>% do(lm_labels(.))
+
+labels
+
+```
+
+
+<br>
+```{r fig_7_18}
+p + geom_smooth(method = lm, se = FALSE) +
+  geom_text(x = 3, y = 40, aes(label = formula), data = labels, parse = TRUE, hjust = 0) +
+  geom_text(x = 3, y =35, aes(label = r2), data = labels, parse = TRUE, hjust = 0)
+
+```
+
+
+<br>
+각 data frame에서 필요한 값을 바로 뽑아내는 것이 필요하기 때문에 함수를 만들었다.  
+만약 결정계수($R^2$)만 필요한 경우라면 좀 더 간단하게 `summarise()`를 사용하여 필요한 것만 뽑아서 사용할 수 있다.  
+<br>
+```{r}
+simple_label <- plyr::ddply(mpg, "drv", summarise, r2 = cor(displ, hwy)^2)
+
+simple_label
+
+```
+
+
+<br>
+`dplyr()` package를 이용하여 구현
+```{r}
+mpg %>% group_by(drv) %>% summarise(r2 = cor(displ, hwy)^2)
+
+```
+
+
+
+<br>
+```{r}
+simple_label$r2 <- sprintf("italic(R^2) == %.2f", simple_label$r2)
+
+simple_label
+
+```
+
+
+
+<br>
+<br>
+<br>
+
+
+**END**
+
+
+<br>
+<br>
+<br>
