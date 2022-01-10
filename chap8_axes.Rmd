@@ -1,0 +1,678 @@
+---
+title: "chap8_axes"
+author: "J.H AHN"
+date: '2022 1 10 '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(gcookbook)
+library(tidyverse)
+library(patchwork)
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+<br>
+### 8.1 Swapping X- and Y-Axes
+<br>
+
+<br>
+```{r fig_8_1}
+fig_8011 <- 
+  PlantGrowth %>% 
+  ggplot(aes(x = group, y = weight)) +
+  geom_boxplot()
+
+fig_8012 <- 
+  PlantGrowth %>% 
+  ggplot(aes(x = group, y = weight)) +
+  geom_boxplot() +
+  coord_flip()
+
+fig_8011 + fig_8012
+
+```
+
+
+<br>
+때로 축을 바꾸면 아이템의 순서를 거꾸로 배치하여야 할 때가 있다.   
+만약 x변수가 factor라면 `scale_x_discrete(limits=rev(levels(...)))`를 사용하여 순서를 바꿀 수 있다.  
+<br>
+```{r fig_8_2}
+PlantGrowth %>% 
+  ggplot(aes(x = group, y = weight)) +
+  geom_boxplot() +
+  coord_flip() +
+  scale_x_discrete(limits=rev(levels(PlantGrowth$group)))
+
+```
+
+
+<br>
+<br>
+### 8.2 Setting the range of a continuous axis
+<br>
+
+<br>
+**xlim**과 **ylim**을 사용하여 연속형 변수가 사용되는 축의 최대, 최솟값을 지정할 수 있다.  
+<br>
+```{r fig_8_3}
+fig_8031 <- 
+  PlantGrowth %>% 
+  ggplot(aes(x = group, y = weight)) +
+  geom_boxplot()
+
+fig_8032 <- 
+  PlantGrowth %>% 
+  ggplot(aes(x = group, y = weight)) +
+  geom_boxplot() +
+  ylim(0, max(PlantGrowth$weight))
+
+fig_8031 + fig_8032
+
+```
+
+
+<br>
+`ylim()`은 `scale_y_continuous()`을 이용하여 limit을 설정하는 것이다. (x도 마찬가지)  
+`scale_y_continuous()`을 이용하면 scale만 바꾸는 것으로 데이터가 살아있지만,   
+`coord_cartesian()`를 사용하면 범위 밖의 데이터는 지워진다.
+<br>
+```{r fig_8_4}
+fig_8041 <- 
+  PlantGrowth %>% 
+  ggplot(aes(x = group, y = weight)) +
+  geom_boxplot() +
+  scale_y_continuous(limits = c(5, 6.5))
+
+fig_8042 <- 
+  PlantGrowth %>% 
+  ggplot(aes(x = group, y = weight)) +
+  geom_boxplot() +
+  coord_cartesian(ylim = c(5, 6.5))
+
+fig_8041 + fig_8042
+
+
+```
+
+
+<br>
+범위를 확장하고 싶을 때는 `expande_limits()`를 사용한다.  
+**하지만 범위를 줄일 수는 없다.**  
+<br>
+```{r fig_8_5}
+PlantGrowth %>% 
+  ggplot(aes(x = group, y = weight)) +
+  geom_boxplot() +
+  expand_limits(y = 0)
+
+
+```
+
+
+<br>
+<br>
+### 8.3 Reversing a continuous axis
+<br>
+
+<br>
+`scale_y_reverse()` 혹은 `scale_x_reverse()`를 사용하면 축방향을 반대로 돌릴 수 있다.  
+<br>
+```{r fig_8_6}
+PlantGrowth %>% 
+  ggplot(aes(x = group, y = weight)) +
+  geom_boxplot() +
+  scale_y_reverse()
+
+```
+
+
+<br>
+`scale_y_reverse()`을 사용하지 않고 유사한 효과를 내려면 아래와 같이 최대, 최솟값의 순서를 바꾸면 된다.  
+<br>
+```{r}
+PlantGrowth %>% 
+  ggplot(aes(x = group, y = weight)) +
+  geom_boxplot() +
+  ylim(6.5, 3.5)
+
+```
+
+
+<br>
+`scale_y_continuous()`처럼 `scale_y_reverse()`는 `ylim()`과 함께 사용할 수 없다. 
+만약 축을 방향을 바꾸면서 range값을 세팅하고 싶다면 `scale_y_reverse()`안에서 limits을 설정해야 한다.  
+<br>
+```{r fig_8_7}
+PlantGrowth %>% 
+  ggplot(aes(x = group, y = weight)) +
+  geom_boxplot() +
+  scale_y_reverse(limits = c(8,0))
+
+```
+
+
+<br>
+<br>
+### 8.4 Changing the order of items on a categorical axis
+<br>
+
+<br>
+범주형, 이산형 변수 축을 순서대로 정렬하기 위해서는 `scale_x_discrete()` 혹은 `scale_y_discrete()`안에 limits을 설정해야 한다.  
+순서는 매뉴얼로 정해줘야 하고 원하는 순서대로 벡터 형식으로 입력하면 된다.  
+원하는 변수만 보여주고 싶으면 limits에 원하는 변수만 선택한다.  
+<br>
+```{r fig_8_8}
+fig_8081 <- 
+  PlantGrowth %>% 
+  ggplot(aes(x = group, y = weight)) +
+  geom_boxplot() +
+  scale_x_discrete(limits = c("trt1", "ctrl", "trt2"))
+
+fig_8082 <- 
+  PlantGrowth %>% 
+  ggplot(aes(x = group, y = weight)) +
+  geom_boxplot() +
+  scale_x_discrete(limits = c("ctrl", "trt1"))
+
+fig_8081 + fig_8082
+
+```
+
+
+<br>
+순서를 거꾸로 하고 싶으면 동일하게 `limits = rev(levels(...))`를 사용한다.  
+<br>
+```{r fig_8_9}
+PlantGrowth %>% 
+  ggplot(aes(x = group, y = weight)) +
+  geom_boxplot() +
+  scale_x_discrete(limits = rev(levels(PlantGrowth$group)))
+
+
+```
+
+
+<br>
+<br>
+### 8.5 Setting the scaling ratio of the X- and Y-axes
+<br>
+
+<br>
+x축과 Y축의 비율을 정하기 위해서는 `coord_fixed()`를 사용한다. 
+<br>
+
+<br>
+```{r fig_8_10}
+fig_8101 <- 
+  marathon %>% 
+  ggplot(aes(x = Half, y = Full)) +
+  geom_point() +
+  coord_fixed()
+
+fig_8102 <- 
+  marathon %>% 
+  ggplot(aes(x = Half, y = Full)) +
+  geom_point() +
+  coord_fixed() +
+  scale_y_continuous(breaks = seq(0, 420, 30)) +
+  scale_x_continuous(breaks = seq(0, 420, 30))
+
+fig_8101 + fig_8102
+
+
+```
+
+
+<br>
+x, y축 사이의 비율을 1:1이 아닌 다른 특정한 비율을 넣고 싶다면 ratio 값을 설정한다.  
+<br>
+
+<br>
+```{r fig_8_11}
+fig_8111 <- 
+  marathon %>% 
+  ggplot(aes(x = Half, y = Full)) +
+  geom_point() +
+  coord_fixed() +
+  scale_y_continuous(breaks = seq(0, 420, 30)) +
+  scale_x_continuous(breaks = seq(0, 420, 30))
+
+fig_8112 <- 
+  marathon %>% 
+  ggplot(aes(x = Half, y = Full)) +
+  geom_point() +
+  coord_fixed(ratio = 1/2) +
+  scale_y_continuous(breaks = seq(0, 420, 30)) +
+  scale_x_continuous(breaks = seq(0, 420, 15))
+
+fig_8111 + fig_8112
+
+```
+
+
+<br>
+<br>
+### 8.6 Setting the positions of tick marks
+<br>
+
+<br>
+```{r fig_8_12}
+fig_8121 <- 
+  PlantGrowth %>% 
+  ggplot(aes(x = group, y = weight)) +
+  geom_boxplot()
+
+fig_8122 <- 
+  PlantGrowth %>% 
+  ggplot(aes(x = group, y = weight)) +
+  geom_boxplot() +
+  scale_y_continuous(breaks = c(4, 4.25, 4.5, 5, 6, 8))
+
+fig_8121 + fig_8122  
+
+```
+
+
+<br>
+이산형 변수가 있는 축에서는 tick mark가 default이다.  
+limits에서 명시한 변수만 순서대로 그려진다.  
+이 상태에서 breaks를 설정하면 레벨을 바꿀 수 있는 반면 삭제하거나 순서를 바꿀 수는 없게된다.  
+<br>
+```{r fig_8_13}
+PlantGrowth %>% 
+  ggplot(aes(x = group, y = weight)) +
+  geom_boxplot() +
+  scale_x_discrete(limits = c("trt2", "ctrl"), breaks = "ctrl")
+
+
+```
+
+
+<br>
+<br>
+### 8.7 Removing tick marks and labels
+<br>
+
+<br>
+tick labels을 삭제하고 싶을 경우에는 `theme(axis.text.y = element_blank())`를 사용하면 된다.  
+이 함수는 연속형 혹은 범주형 변수가 쓰이는 축에 모두 적용된다.  
+<br>
+tick label은 독자적으로 조절되지만, tic marks와 grid line은 함께 조절되기 때문에 하나만 없앨 수는 없다.  
+<br>
+```{r fig_8_14}
+fig_8141 <- 
+  PlantGrowth %>% 
+  ggplot(aes(x = group, y = weight)) +
+  geom_boxplot() +
+  theme(axis.text.y = element_blank()) +
+  labs(subtitle = "no tick labels on y-axis")
+
+fig_8142 <- 
+  PlantGrowth %>% 
+  ggplot(aes(x = group, y = weight)) +
+  geom_boxplot() +
+  theme(axis.text.y = element_blank(), axis.ticks = element_blank()) +
+  labs(subtitle = "no tick labels & marks on y-axis")
+
+fig_8143 <- 
+  PlantGrowth %>% 
+  ggplot(aes(x = group, y = weight)) +
+  geom_boxplot() +
+  scale_y_continuous(breaks = NULL) +
+  labs(subtitle = "with breaks = NULL")
+
+fig_8141 + fig_8142 + fig_8143
+
+```
+
+
+<br>
+<br>
+### 8.8 Changing the text of tick labels
+<br>
+
+<br>
+임의의 tick label을 사용하고 싶다면 breaks와 labels를 사용한다.  
+<br>
+```{r fig_8_15}
+fig_8151 <- 
+heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn)) +
+  geom_point()
+
+fig_8152 <- 
+heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn)) +
+  geom_point() +
+  scale_y_continuous(breaks = c(50, 56, 60, 66, 72),
+                     labels = c("Tiny", "Really\nshort", "Short", "Medium", "Tallish"))
+
+fig_8151 + fig_8152
+
+```
+
+
+<br>
+임의의 label을 모두 입력하기 보다는 하나의 포맷으로 정해두고 넣는 경우가 많다.  
+예를 들어 키를 피트(ft)와 인치(in)로 나타낼 때 5'6"와 같이 쓰는 경우다.  
+이런 작업을 하기위해서 먼저 포맷을 맞추는 함수를 만들어 입력된 값을 정해진 포맷으로 반환하게 해야 한다.  
+<br>
+```{r}
+footinch_formatter <- function(x) {
+  foot <- floor(x/12)
+  inch <- x %% 12
+  return(paste(foot, "'", inch, "\"", sep=""))
+}
+
+```
+
+```{r}
+footinch_formatter(56:64)
+
+```
+
+
+<br>
+```{r fig_8_16}
+fig_8161 <- 
+heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn)) +
+  geom_point() +
+  scale_y_continuous(labels = footinch_formatter)
+
+fig_8162 <- 
+heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn)) +
+  geom_point() +
+  scale_y_continuous(breaks = seq(48, 72, 4),
+                     labels = footinch_formatter)
+
+fig_8161 + fig_8162
+
+```
+
+
+<br>
+또 다른 포맷 변환으로 시간을 HH:MM:SS 형태로 바꾸는 것이 있다.
+아래 함수는 분(minute)을 입력하면 시간:분:초의 형태로 변환해 준다.  
+<br>
+```{r}
+timeHMS_formatter <- function(x) {
+  h <- floor(x/60)
+  m <- floor(x %% 60)
+  s <- round(60 * (x %% 1))
+  lab <- sprintf("%02d:%02d:%02d", h, m, s)
+  lab <- gsub("^00:","", lab)
+  lab <- gsub("^0","",lab)
+  return(lab)
+}
+
+
+```
+
+```{r}
+timeHMS_formatter(c(0.33, 50, 51.25, 59.32, 60, 60.1, 130.23))
+```
+
+
+<br>
+<br>
+### 8.9 Changing the appearance of tick labels
+<br>
+
+<br>
+```{r fig_8_17}
+fig_8171 <- 
+  PlantGrowth %>% 
+  ggplot(aes(x = group, y = weight)) +
+  geom_boxplot() +
+  scale_x_discrete(breaks = c("ctrl", "trt1", "trt2"),
+                   labels = c("Control", "Treatment1", "Treatment2"))
+fig_8172 <- 
+  PlantGrowth %>% 
+  ggplot(aes(x = group, y = weight)) +
+  geom_boxplot() +
+  scale_x_discrete(breaks = c("ctrl", "trt1", "trt2"),
+                   labels = c("Control", "Treatment1", "Treatment2")) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
+fig_8173 <- 
+  PlantGrowth %>% 
+  ggplot(aes(x = group, y = weight)) +
+  geom_boxplot() +
+  scale_x_discrete(breaks = c("ctrl", "trt1", "trt2"),
+                   labels = c("Control", "Treatment1", "Treatment2")) +
+  theme(axis.text.x = element_text(angle = 30, hjust = 1, vjust = 1))
+
+fig_8171 + fig_8172 + fig_8173
+
+```
+
+
+<br>
+글자를 회전시키는 것외에도 size, style(bold/italic/normal), font family(Times, Helvetica) 등을 `element_text()`를 이용하여 변경할 수 있다.  
+size를 정할 때 쓴 `rel()`은 theme에서 쓰이는 argument로 다른 글자 대비 상대적인 크기를 얼마로 할지 결정하게 해 준다.  
+<br>
+```{r fig_8_18}
+PlantGrowth %>% 
+  ggplot(aes(x = group, y = weight)) +
+  geom_boxplot() +
+  scale_x_discrete(breaks = c("ctrl", "trt1", "trt2"),
+                   labels = c("Control", "Treatment1", "Treatment2")) +
+  theme(axis.text.x = element_text(family = "Times", face = "italic",
+                                   color = "#8B0000", size = rel(0.9)))
+
+
+```
+
+
+<br>
+<br>
+### 8.10 Changing the text of axis labels
+<br>
+
+<br>
+축의 text label을 변경하기 위해서는 `xlab()`, `ylab()`을 이용한다.  
+<br>
+```{r fig_8_19}
+fig_8191 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn, color = sex)) +
+  geom_point() +
+  xlab("Age in years") + ylab("Height in inches")
+
+fig_8192 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn, color = sex)) +
+  geom_point() +
+  labs(x = "Age in years", y = "Height in inches")
+
+fig_8191 + fig_8192
+
+
+```
+
+
+<br>
+다른 방법으로는 `scale_*_continuous()`에 name으로 설정하는 방법이 있다.  
+<br>
+```{r}
+heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn, color = sex)) +
+  geom_point() +
+  scale_x_continuous(name = "Age in years")
+
+```
+
+
+<br>
+```{r fig_8_20}
+heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn, color = sex)) +
+  geom_point() +
+  scale_x_continuous(name = "Age \n(in years)")
+
+```
+
+
+<br>
+<br>
+### 8.11 Removing axis labels
+<br>
+
+<br>
+축의 label을 지우고 싶으면 `theme(axis.title.x = element_blank())`를 사용한다.  
+<br>
+```{r fig_8_21}
+fig_8201 <-   
+  PlantGrowth %>% 
+  ggplot(aes(x = group, y = weight)) +
+  geom_boxplot()
+
+fig_8202 <- 
+  PlantGrowth %>% 
+  ggplot(aes(x = group, y = weight)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_blank())
+
+fig_8201 + fig_8202
+
+```
+
+
+<br>
+label을 지우는 다른 방법으로는 빈 값을 넣는 방법이 있다.  
+하지만 이렇게 label을 지우면 원래 글자가 있던 자리의 공간이 글자가 있을 때와 동일하게 유지한다. 
+책에는 xlab을 쓸 때와 element_blank()를 쓸 때가 다르다고 되어 있는데 현재 ggplot2에는 같게 나옴.  
+<br>
+```{r fig_8_21}
+fig_8211 <- 
+  PlantGrowth %>% 
+  ggplot(aes(x = group, y = weight)) +
+  geom_boxplot() +
+  theme(axis.title.x = element_blank()) +
+  labs(subtitle = "using element_blank()")
+
+fig_8212 <- 
+PlantGrowth %>% 
+  ggplot(aes(x = group, y = weight)) +
+  geom_boxplot() +
+  xlab("") +
+  labs(subtitle = "using xlab with empty value")
+
+fig_8211 + fig_8212
+
+```
+
+
+<br>
+<br>
+### 8.12 Chnaging the apperance of axis labels
+<br>
+
+<br>
+축의 label 외형을 바꾸고 싶으면 `axis.title.x()`를 사용  
+<br>
+```{r fig_8_22}
+heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn, color = sex)) +
+  geom_point() +
+  theme(axis.title.x = element_text(face = "italic", color = "#8B0000", size = 14))
+
+```
+
+
+<br>
+```{r fig_8_23}
+fig_8231 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn, color = sex)) +
+  geom_point() +
+  ylab("Height\n(inches)") +
+  theme(axis.title.y = element_text(angle = 0, face = "italic", size = 14))
+
+fig_8232 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn, color = sex)) +
+  geom_point() +
+  ylab("Height\n(inches)") +
+  theme(axis.title.y = element_text(angle = 90, face = "italic", size = 14))
+
+fig_8231 + fig_8232
+
+```
+
+
+<br>
+<br>
+### 8.13 Showing lines along the axes
+<br>
+
+<br>
+```{r fig_8_24}
+fig_8241 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn, color = sex)) +
+  geom_point() + 
+  theme(axis.line = element_line(color = "#000000"))
+
+fig_8242 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn, color = sex)) +
+  geom_point() + 
+  theme_bw() +
+  theme(panel.border = element_blank(),
+        axis.line = element_line(color = "#000000"))
+
+fig_8241 + fig_8242
+
+```
+
+
+<br>
+```{r fig_8_25}
+
+
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<br>
+<br>
+<br>
+
+
+**END**
+
+
+<br>
+<br>
+<br>
