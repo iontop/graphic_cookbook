@@ -1,0 +1,298 @@
+---
+title: "chap9_controlling_overall_appearance"
+author: "J.H AHN"
+date: '2022 1 11 '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(gcookbook)
+library(tidyverse)
+library(patchwork)
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+<br>
+<br>
+### 9.1 Setting the title of a graph
+<br>
+
+<br>
+`ggtitle()`은 `labs(title = ...)`과 동일함  
+<br>
+```{r fig_9_1}
+fig_9011 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn)) +
+  geom_point() +
+  ggtitle("Age and Height of Schoolchildren")
+
+fig_9012 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn)) +
+  geom_point() +
+  ggtitle("Age and Height \nof Schoolchildren")
+
+fig_9011 + fig_9012
+
+```
+
+
+<br>
+title을 plotting area 내부로 넣고 싶을 때는 아래와 같이 방법을 사용 가능    
+<br>
+```{r fig_9_2}
+fig_9021 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn)) +
+  geom_point() +
+  ggtitle("Age and Height of Schoolchildren") +
+  theme(plot.title = element_text(vjust = -2.5))
+
+fig_9022 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn)) +
+  geom_point() +
+  annotate("text", x = mean(range(heightweight$ageYear)), y = Inf,
+           label = "Age and Height of Schoolchildren",
+           vjust = 1.5, size = 6)
+  
+
+fig_9021 + fig_9022
+
+```
+
+
+<br>
+<br>
+### 9.2 Changing the apperance of text
+<br>
+
+<br>
+```{r fig_9_3}
+fig_9031 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn)) +
+  geom_point() +
+  theme(axis.title = element_text(size = 16, lineheight = 0.9, family = "sans",
+                                  face = "bold.italic", color = "#FF0000")) +
+  labs(subtitle = "axis.title")
+
+fig_9032 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn)) +
+  geom_point() +
+  ggtitle("Age and Height \nof Schoolchildren") +
+  theme(plot.title = element_text(size = rel(1.5), lineheight = 0.9, family = "mono",
+                                  face = "bold.italic", color = "#0000FF")) +
+  labs(subtitle = "plot.title")
+
+fig_9033 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn)) +
+  geom_point() +
+  annotate("text", x = 15, y =53, label = "Some text", size = 7, family = "serif",
+           fontface = "bold.italic", color = "#00FF00") +
+  labs(subtitle = "annotate")
+
+fig_9034 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn)) +
+  geom_point() +
+  geom_text(aes(label = weightLb), size = 4, family = "mono", color = "#191970") +
+  labs(subtitle = "geom_text")
+
+
+fig_9031 + fig_9032 + fig_9033 + fig_9034
+
+```
+
+
+<br>
+<br>
+### 9.3 Using themes
+<br>
+
+<br>
+```{r fig_9_5}
+fig_9051 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn)) +
+  geom_point() +
+  theme_gray()
+
+fig_9052 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn)) +
+  geom_point() +
+  theme_bw()
+
+fig_9051 + fig_9052
+
+```
+
+
+<br>
+<br>
+### 9.4 Changing the apperance of theme elements
+<br>
+
+<br>
+```{r fig_9_6}
+fig_9061 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn)) +
+  geom_point() +
+  theme(
+    panel.grid.major = element_line(color = "#8B0000"),
+    panel.grid.minor = element_line(color = "#8B0000", linetype = "dashed", size = 0.2),
+    panel.background = element_rect(fill = "#ADD8E6"),
+    panel.border = element_rect(color = "#191970", fill = NA, size = 2)
+  ) +
+  labs(subtitle = "options for plotting area")
+
+fig_9062 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn)) +
+  geom_point() +
+  ggtitle("Plot title here") +
+  theme(
+    axis.title.x = element_text(color = "#8B0000", size = 14),
+    axis.text.x = element_text(color = "#191970"),
+    axis.title.y = element_text(color = "#8B0000", size = 14, angle = 90),
+    axis.text.y = element_text(color = "#191970"),
+    plot.title = element_text(color = "#8B0000", size = 20, face = "bold")
+  ) +
+  labs(subtitle = "options for plotting area")
+
+fig_9063 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn)) +
+  geom_point() +
+  theme(
+    legend.background = element_rect(fill = "gray85", color = "#8B0000", size = 1),
+    legend.title = element_text(color = "#191970", face = "blod", size = 14),
+    legend.text = element_text(color = "#8B0000"),
+    legend.key = element_rect(color = "#006400", size = 0.25)
+  ) +
+  labs(subtitle = "options for legend")
+
+
+fig_9064 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn)) +
+  geom_point() +
+  facet_wrap(~ sex) +
+  theme(
+    strip.background = element_rect(fill = "#FFCCCB"),
+    strip.text.y = element_text(size = 14, angle = -90, face = "bold")
+  ) +
+  labs(subtitle = "options for facets")
+
+(fig_9061 + fig_9062) / (fig_9063 + fig_9064)
+
+```
+
+
+<br>
+```{r}
+fig_9065 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn)) +
+  geom_point() +
+  theme(axis.title.x = element_text(color = "#8B0000")) +
+  theme_bw() +
+  labs(subtitle = "theme() has no effect \nif beofore adding a complete theme")
+
+fig_9066 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn)) +
+  geom_point() +
+  theme_bw() +
+  theme(axis.title.x = element_text(color = "#8B0000")) +
+  labs(subtitle = "theme() works \nif after a complete theme") 
+  
+fig_9065 + fig_9066
+
+```
+
+
+<br>
+<br>
+### 9.5 Creating your own themes
+<br>
+
+<br>
+```{r}
+mytheme <- 
+  theme_bw() +
+  theme(text = element_text(color = "#8B0000"),
+        axis.title = element_text(size = rel(1.25)))
+
+```
+
+```{r fig_9_7}
+heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn)) +
+  geom_point() +
+  mytheme
+
+```
+
+
+<br>
+<br>
+### 9.6 Hiding grid lines
+<br>
+
+<br>
+```{r fig_9_8}
+fig_9081 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn)) +
+  geom_point() +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()
+  ) +
+  labs(subtitle = "no grid")
+
+fig_9082 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn)) +
+  geom_point() +
+  theme(
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank()
+  ) +
+  labs(subtitle = "no vertical grid")
+
+fig_9083 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn)) +
+  geom_point() +
+  theme(
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.y = element_blank()
+  ) +
+  labs(subtitle = "no horizontal grid")
+
+fig_9081 + fig_9082 + fig_9083
+
+```
+
+
+
+
+<br>
+<br>
+<br>
+
+
+**END**
+
+
+<br>
+<br>
+<br>
