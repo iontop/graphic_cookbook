@@ -1,0 +1,288 @@
+---
+title: "chap12_using_color_in_plots"
+author: "J.H AHN"
+date: '2022 1 11 '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(gcookbook)
+library(tidyverse)
+library(patchwork)
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+<br>
+<br>
+### 12.1 Setting the colors of objects
+<br>
+
+<br>
+```{r fig_12_1}
+fig_12011 <- 
+  mtcars %>% 
+  ggplot(aes(x = wt, y = mpg)) +
+  geom_point(color = "#B22222")
+
+library(MASS)
+fig_12012 <- 
+  birthwt %>% 
+  ggplot(aes(x = bwt)) +
+  geom_histogram(fill = "#8B0000", color = "#000000")
+
+fig_12011 + fig_12012
+
+```
+
+
+<br>
+<br>
+### 12.2 Mapping variables to colors
+<br>
+
+<br>
+```{r fig_12_2}
+fig_12021 <- 
+  cabbage_exp %>% 
+  ggplot(aes(x = Date, y = Weight, fill = Cultivar)) + 
+  geom_bar(stat = "identity", position = "dodge", color = "#000000")
+
+fig_12022 <- 
+  mtcars %>% 
+  ggplot(aes(x = wt, y = mpg, color = cyl)) +
+  geom_point()
+
+fig_12021 + fig_12022
+
+```
+
+
+<br>
+```{r fig_12_3}
+mtcars %>% 
+  ggplot(aes(x = wt, y = mpg, color = factor(cyl))) +
+  geom_point()
+
+```
+
+
+<br>
+<br>
+### 12.3 Using a different palette for a discrete variable
+<br>
+
+<br>
+```{r fig_12_4}
+fig_12041 <- 
+  uspopage %>% 
+  ggplot(aes(x = Year, y = Thousands, fill = AgeGroup)) +
+  geom_area(position = position_stack(reverse = TRUE))
+
+fig_12042 <- 
+  uspopage %>% 
+  ggplot(aes(x = Year, y = Thousands, fill = AgeGroup)) +
+  geom_area(position = position_stack(reverse = TRUE)) +
+  scale_fill_brewer(palette = "Blues")
+
+fig_12041 + fig_12042
+
+```
+
+
+<br>
+`scale_color_hue()`에서 h = range of hues to use, in [0, 360], c = chroma (intensity of colour), maximum value varies depending on combination of hue and luminance., l = luminance (lightness), in [0, 100]를 의미한다.  
+<br>
+```{r fig_12_5}
+fig_12051 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn, color = sex)) +
+  geom_point()
+
+fig_12052 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn, color = sex)) +
+  geom_point() + 
+  scale_color_hue(l=45)
+
+fig_12051 + fig_12052
+
+```
+
+
+<br>
+```{r fig_12_6}
+library(RColorBrewer)
+display.brewer.all()
+
+```
+
+
+<br>
+```{r fig_12_7}
+uspopage %>% 
+  ggplot(aes(x = Year, y = Thousands, fill = AgeGroup)) +
+  geom_area(position = position_stack(reverse = TRUE)) +
+  scale_fill_brewer(palette = "Oranges")
+
+
+```
+
+
+<br>
+```{r fig_12_8}
+fig_12081 <- 
+  uspopage %>% 
+  ggplot(aes(x = Year, y = Thousands, fill = AgeGroup)) +
+  geom_area(position = position_stack(reverse = TRUE)) +
+  scale_fill_grey()
+
+fig_12082 <- 
+  uspopage %>% 
+  ggplot(aes(x = Year, y = Thousands, fill = AgeGroup)) +
+  geom_area(position = position_stack(reverse = TRUE)) +
+  scale_fill_grey(start = 0.7, end = 0)
+
+fig_12081 + fig_12082
+
+```
+
+
+<br>
+<br>
+### 12.4 Using a manually defined palette for a discrete variable
+<br>
+
+<br>
+```{r fig_12_9}
+fig_12091 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn, color = sex)) +
+  geom_point() +
+  scale_color_manual(values = c("#8B0000", "#191970"))
+
+fig_12092 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn, color = sex)) +
+  geom_point() +
+  scale_color_manual(values = c("#90ee90", "#FFCBCB"))
+
+
+fig_12091 + fig_12092
+
+```
+
+
+<br>
+<br>
+### 12.5 Using a colorblind-friend palette
+<br>
+
+<br>
+```{r fig_12_10}
+cb_palette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442",
+                "#0072B2", "#D55E00", "#CC79A7")
+
+uspopage %>% 
+  ggplot(aes(x = Year, y = Thousands, fill = AgeGroup)) +
+  geom_area(position = position_stack(reverse = TRUE)) + 
+  scale_fill_manual(values = cb_palette)
+
+
+```
+
+
+<br>
+경우에 따라 검은색 대신에 회색을 써도 됨.  
+<br>
+```{r}
+c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442","#0072B2", "#D55E00", "#CC79A7")
+scales::show_col(c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442","#0072B2", "#D55E00", "#CC79A7"))
+
+```
+
+
+<br>
+<br>
+### 12.6 Using a manually defined palette for a continuous variable
+<br>
+
+<br>
+```{r fig_12_12}
+fig_12121 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn, color = weightLb)) +
+  geom_point() +
+  scale_color_gradient(low = "#000000", high = "#FFFFFF") + 
+  labs(subtitle = "with scale_color_gradient")
+
+fig_12122 <- 
+  heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn, color = weightLb)) +
+  geom_point() +
+  scale_color_gradient2(low = scales::muted("#FF0000"), 
+                        mid = "#FFFFFF",
+                        high = scales::muted("#0000FF"),
+                        midpoint = 110) + 
+  labs(subtitle = "gradient with mid color")
+
+fig_12123 <- 
+   heightweight %>% 
+  ggplot(aes(x = ageYear, y = heightIn, color = weightLb)) +
+  geom_point() +
+  scale_color_gradientn(colors = c("#FF0000", "#FFA500", "#FFFF00", "#FFFFFF")) +
+  labs(subtitle = "gradient with n colors")
+
+
+fig_12121 + fig_12122 + fig_12123 + plot_layout(ncol = 2)
+
+```
+
+
+```{r}
+scales::show_col(c(scales::muted("#FF0000"), "#FF0000", scales::muted("#0000FF"), "#0000FF"))
+
+```
+
+
+<br>
+<br>
+### 12.7 Coloring a shaded region based on value
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<br>
+<br>
+<br>
+
+
+**END**
+
+
+<br>
+<br>
+<br>
