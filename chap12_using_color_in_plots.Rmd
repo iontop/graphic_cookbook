@@ -251,28 +251,61 @@ scales::show_col(c(scales::muted("#FF0000"), "#FF0000", scales::muted("#0000FF")
 <br>
 
 
+<br>
+```{r}
+cb <- 
+  climate %>% 
+  subset(Source == "Berkeley") %>% 
+  mutate(valence = case_when(Anomaly10y >= 0 ~ "pos", TRUE ~ "neg"))
+
+cb
+
+```
 
 
+<br>
+자세히 보면 0부근에 두 색이 겹쳐져 있는 것을 발견할 수 있다.  
+두 색깔 영역이 각각의 데이터로 연결된 하나의 다각형으로 묶여져 있어 발생하는 현상이다.  
+이런 현상을 방지하기 위해서 `approx()`를 사용하여 interpolation 시켜줘야 한다.  
+<br>
+```{r fig_12_13}
+cb %>% 
+  ggplot(aes(x = Year, y = Anomaly10y)) +
+  geom_area(aes(fill = valence)) +
+  geom_line() +
+  geom_hline(yintercept = 0)
+
+```
 
 
+```{r}
+# approx() return a list with x and y vectors
+interp <- approx(cb$Year, cb$Anomaly10y, n = 1000)
+
+# put in a data frame and recalculate valence
+cbi <- data.frame(Year = interp$x, Anomaly10y = interp$y)
+
+cbi <- 
+  cbi %>% 
+  mutate(valence = case_when(Anomaly10y >= 0 ~ "pos", TRUE ~ "neg"))
+
+cbi
+
+```
 
 
+<br>
+```{r}
+cbi %>% 
+  ggplot(aes(x = Year, y = Anomaly10y)) +
+  geom_area(aes(fill = valence), alpha = 0.4) +
+  geom_line() +
+  geom_hline(yintercept = 0) +
+  scale_fill_manual(values = c("#CCEEFF", "#FFDDDD"), guide = "none") +
+  scale_x_continuous(expand = c(0,0))
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+```
 
 
 <br>
