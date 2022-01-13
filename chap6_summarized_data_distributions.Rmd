@@ -2,7 +2,9 @@
 title: "chap6_summarized_data_distributions"
 author: "J.H AHN"
 date: '2022 1 10 '
-output: html_document
+output: 
+  html_document:
+    toc: TRUE
 ---
 
 ```{r setup, include=FALSE}
@@ -13,10 +15,13 @@ library(patchwork)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 <br>
+
 ### 6.1 Making a basic histogram
+
 <br>
 
 <br>
+
 ```{r fig_6_1}
 faithful %>% 
   ggplot(aes(x = waiting)) +
@@ -26,7 +31,9 @@ faithful %>%
 
 
 <br>
+
 만약 빠르게 데이터 프레임에 없는 데이터를 보려면 NULL을 입력하고 `ggplot()`에서 벡터 값을 불러오는 방식으로 쓸 수도 있다.  
+
 <br>
 ```{r}
 # Store the values in a simple vector
@@ -40,11 +47,14 @@ ggplot(NULL, aes(x = w)) +
 
 
 <br>
+
 default로 데이터는 30 bins로 구성되나 필요에 따라 bin의 수량이나 폭은 변경할 수 있다.  
 아래 예시에서 `diff()`와 `range()`를 조합해서 x축의 범위를 15개로 나눈 후 그리는 방법을 보여준다.  
 'diff()`는 앞의 값과 다음 값의 차이를 계산해 주는 함수이고, `range()`는 주어진 벡터의 최대와 최소값을 반환하는 함수이다.  
 즉 `range()`함수로 x축의 최대값과 최소값을 반환하여 `diff()`함수로 두 값을 차이를 계산 후 15등분하는 것이다.  
+
 <br>
+
 ```{r fig_6_2}
 # Set the width of each bin to 5
 fig_6021 <- 
@@ -69,9 +79,12 @@ fig_6021 + fig_6022
 
 
 <br>
+
 책에서는 origin값을 31 혹은 35로 주었으나, 현재 ggplot에는 origin 대신 boundary를 사용함.  
 `binwidth = 8`좌측에는 31, 39, 47, ...의 boundary를 준 것이고, 우측은 35, 43, 41, ...의 boundary를 준 것이 된다.   
+
 <br>
+
 ```{r fig_6_3}
 h <- 
   faithful %>% 
@@ -90,10 +103,13 @@ fig_6031 + fig_6032
 
 <br>
 <br>
+
 ### 6.2 Making multiple histogram from grouped data
+
 <br>
 
 <br>
+
 ```{r}
 library(MASS)
 birthwt
@@ -101,13 +117,18 @@ birthwt
 
 
 <br>
+
 `facet_wrap()`으로 각 그룹의 historam을 만들 수 있다.  
 아래 예시는 그룹으로 나눈 후 label을 붙이는 방법을 보여준다.  
 `labeller = as_labeller(c(...))`를 이용하여 label을 붙이는 것이 가능하고, 
 처음부터 데이터의 0과 1값을 No Smoke와 Smoke로 값을 바꾼 후 histogram을 그리는 것도 가능하다.  
+
 <br>
-이런 histogram을 그리기 위해서는 facet하는 열이 categorical variable이어야 한다.  
+
+이런 histogram을 그리기 위해서는 facet하는 열이 categorical variable이어야 한다. 
+
 <br>
+
 ```{r fig_6_4}
 fig6041 <- 
   birthwt %>% 
@@ -128,9 +149,12 @@ fig6041 + fig6042
 
 
 <br>
+
 facet을 사용할 때 각 facet은 같은 y scaling을 가지기 때문에 그룹의 분포를 비교하는데 어려움이 있을 수 있다.  
 예를 들어 race로 birth weight을 facet하는 경우를 보자.  
+
 <br>
+
 ```{r fig_6_5}
 fig6051 <- 
   birthwt %>% 
@@ -154,14 +178,19 @@ fig6051 + fig6052
 
 
 <br>
+
 그룹핑한 변수를 맵핑하는 다른 방법으로 `fill`을 이용하는 방법이 있다.  
 그룹핑하는 변수는 factor나 character 벡터이어야 한다.  
-그래서 smoke열을 factor로 변환 후 histogram을 그리면 된다.  
+그래서 smoke열을 factor로 변환 후 histogram을 그리면 된다. 
+
 <br>
+
 이런 식으로 그릴 때 `position`을 "identity"로 해주어야 한다.  
 "identity"로 설정하지 않으면 stacking하기 때문에 분포를 파악하기 어렵기 때문이다.  
+
 <br>
-```{r fig_6_5}
+
+```{r fig_6_5a}
 birthwt %>% 
   mutate(smoke = factor(smoke)) %>% 
   ggplot(aes(x = bwt, fill = smoke)) +
@@ -173,12 +202,17 @@ birthwt %>%
 
 <br>
 <br>
+
 ### 6.3 Making a density curve
+
 <br>
 
 <br>
-`geom_density()`는 연속형 변수인 x의 분호를 그릴 때 사용된다.  
+
+`geom_density()`는 연속형 변수인 x의 분호를 그릴 때 사용된다. 
+
 <br>
+
 ```{r fig_6_7}
 faithful %>% 
   ggplot(aes(x = waiting)) +
@@ -188,8 +222,11 @@ faithful %>%
 
 
 <br>
+
 `geom_density()`도 `geom_histogram()`과 동일하게 NULL값을 쓰고 벡터를 넣어 그리는 것이 가능하다.  
+
 <br>
+
 ```{r}
 w <- faithful$waiting
 
@@ -199,9 +236,12 @@ ggplot(NULL, aes(x = w)) + geom_density()
 
 
 <br>
+
 데이터 분포를 예측하는데 kernel density curve를 사용하는데 smoothing 정도는 *kernel bandwidth*에 따라 결정된다.  
 이 값이 클 수록 더 평활해지고, 작을 수록 변동을 잘 반영한다.
+
 <br>
+
 ```{r fig_6_8}
 faithful %>% 
   ggplot(aes(x = waiting)) +
@@ -213,9 +253,12 @@ faithful %>%
 
 
 <br>
+
 x축의 값은 모든 데이터를 담을 수 있도록 설정되는데 이 때문에 양 끝의 값이 잘리는 경우가 발생하기도 한다.  
 curve를 더 많이 보일 수 있도록 x축의 limits을 설정한다.  
+
 <br>
+
 ```{r fig_6_9}
 faithful %>% 
   ggplot(aes(x = waiting)) +
@@ -227,12 +270,15 @@ faithful %>%
 
 
 <br>
+
 이론값과 실제 관측값을 비교할 때 density curve와 historam을 겹칠 수 있다.  
 density curve의 y값은 작기 때문에 histogram에 변형을 가하지 않으면 보기 어렵다.  
 이러한 문제점을 해결하기 위해서 histogram을 density curve에 매칭시킬 수 있도록 scale down 해 주는 것이 필요하다. 
 이를 위해 `ggplot(aes(...)) `에서 **y = ..density..**을 넣어주어야 한다.
 이렇게 그릴 때는 `geom_histogram()`을 먼저 그리고, `geom_density()`를 레이어링한다.  
+
 <br>
+
 ```{r fig_6_10}
 faithful %>% 
   ggplot(aes(x = waiting, y = ..density..)) +
@@ -245,13 +291,18 @@ faithful %>%
 
 <br>
 <br>
+
 ### 6.4 Making multiple density curves from grouped data
+
 <br>
 
 <br>
+
 흡연여부가 bwt(birth weight in grams)에 미치는 영향을 아래와 같이 나타낼 수 있다.  
 이를 위해서는 histogram과 마찬가지로 smoke를 factor로 바꿔주는 것이 필요하다.   
+
 <br>
+
 ```{r fig_6_11}
 fig_6111 <- 
   birthwt %>% 
@@ -271,9 +322,12 @@ fig_6111 + fig_6112
 
 
 <br>
+
 다른 방법으로는 facet을 이용하여 일렬(수직 혹은 수평방향)로 나열하여 보여주는 것이다.  
 수직방향으로 나열하는 것이 두 분포를 비교하는데 더 편하다.  
+
 <br>
+
 ```{r fig_6_12}
 fig_6121 <- 
   birthwt %>% 
@@ -298,6 +352,7 @@ fig_6121 + fig_6122
 
 
 <br>
+
 ```{r fig_6_13}
 birthwt %>% 
   mutate(smoke = factor(smoke)) %>% 
@@ -314,10 +369,13 @@ birthwt %>%
 
 <br>
 <br>
+
 ### 6.5 Making a frequency polygon
+
 <br>
 
 <br>
+
 ```{r fig_6_14}
 fig_6141 <- 
   faithful %>% 
@@ -338,7 +396,9 @@ fig_6141 + fig_6142
 
 <br>
 <br>
+
 ### 6.6 Making a basic box plot
+
 <br>
 
 ```{r fig_6_15}
@@ -351,11 +411,16 @@ birthwt %>%
 
 
 <br>
+
 위에서는 race를 1,2,3의 값으로 되어 있어 `ggplot()`은 어느 변수를 grouping 할 수 있는지를 모른다.  
-따라서 적절하게 그룹핑하기 위해서는 `ggplot()`안에 `factor()`를 써서 race를 factor로 변경해 주었다.  
+따라서 적절하게 그룹핑하기 위해서는 `ggplot()`안에 `factor()`를 써서 race를 factor로 변경해 주었다. 
+
 <br>
+
 box plot에서 outliner는 size = 2, shape = 16이 default값으로 설정되어 있다.
+
 <br>
+
 ```{r fig_6_17}
 fig_6171 <- 
   birthwt %>% 
@@ -375,9 +440,12 @@ fig_6171 + fig_6172
 
 
 <br>
+
 한 그룹만 box plot으로 그릴려면 x에 임의의 값을 주어야 한다. 
 반면에 `ggplot()`은 box plot을 그리기 위해 어느 x 좌표를 써야 할 지 모르기 때문에 이럴 때는 x = 1로 입력하고 x축의 틱마크와 라벨은 출력되지 않게 한다.
+
 <br>
+
 ```{r fig_6_18}
 birthwt %>% 
   ggplot(aes(x = 1, y = bwt)) +
@@ -390,10 +458,13 @@ birthwt %>%
 
 <br>
 <br>
+
 ### 6.7 Adding notches to a box plot
+
 <br>
 
 <br>
+
 ```{r fig_6_19}
 birthwt %>% 
   ggplot(aes(x = factor(race), y = bwt)) +
@@ -404,12 +475,17 @@ birthwt %>%
 
 <br>
 <br>
+
 ### 6.8 Adding means to a box plot
+
 <br>
 
 <br>
+
 `stat_summary()`를 이용하여 x, y, group별 값을 box plot내에 나타낼 수 있게 함.
+
 <br>
+
 ```{r fig_6_20}
 birthwt %>% 
   ggplot(aes(x = factor(race), y = bwt)) +
@@ -422,10 +498,13 @@ birthwt %>%
 
 <br>
 <br>
+
 ### 6.9 Making a violin plot
+
 <br>
 
 <br>
+
 ```{r fig_6_21}
 heightweight %>% 
   ggplot(aes(x = sex, y = heightIn)) +
@@ -435,9 +514,12 @@ heightweight %>%
 
 
 <br>
+
 violin plot은 kernel density estimate를 mirror시켜 둔 것이다.  
 일반적으로 violin plot 내부에 box plot을 겹쳐서 그리고 중간값을 점으로 표현하고, outliner는 출력하지 않는다.  
+
 <br>
+
 ```{r fig_6_22}
 heightweight %>% 
   ggplot(aes(x = sex, y = heightIn)) +
@@ -450,8 +532,11 @@ heightweight %>%
 
 
 <br>
+
 default range는 데이터의 최대값과 최소값으로 정해지는데 평평하게 표현되는 violin plot의 끝부분을 뾰족하게 유지하기 위해서는 `trim = FALSE`로 세팅하면 된다.  
+
 <br>
+
 ```{r fig_6_23}
 heightweight %>% 
   ggplot(aes(x = sex, y = heightIn)) +
@@ -460,8 +545,11 @@ heightweight %>%
 
 
 <br>
+
 violin plot은 각각의 면적이 같게 표현되는데 `scale = "count"`로 설정하면 면적이 각 그룹 관측치의 수에 비례하여 표현된다.  
+
 <br>
+
 ```{r fig_6_24}
 heightweight %>% 
   ggplot(aes(x = sex, y = heightIn)) +
@@ -471,8 +559,11 @@ heightweight %>%
 
 
 <br>
+
 violin plot도 kernel density curve를 사용하는 것이므로 `geom_density()`와 동일하게 adjust값으로 smooth 정도를 조절 가능하다.  
+
 <br>
+
 ```{r fig_6_25}
 fig_6251 <- 
   heightweight %>% 
@@ -491,10 +582,13 @@ fig_6251 + fig_6252
 
 <br>
 <br>
+
 ### 6.10 Making a dot plot
+
 <br>
 
 <br>
+
 ```{r fig_6_26}
 countries2009 <- subset(countries, Year == 2009 & healthexp > 2000)
 
@@ -509,13 +603,18 @@ p + geom_dotplot()
 
 
 <br>
+
 이런 종류의 dot plot을 *Wilkinson dot plot*이라 한다.  
 앞서 배운 *Cleveland dot plot*과는 데이터에 따라 bins의 위치가 정해지는 점, 각 bin의 최대 폭이 각 점과 연관성을 가진다는 점에서 다르다.  최대 bin size는 데이터 범위의 1/30(default)로 설정되어 있다.  
+
 <br>
+
 기본적으로 `geom_dotplot()`은 x축을 따라 y축에 값이 stack 된다.  
 dots은 시각적으로는 stack되고 있으나 ggplot2의 기술적 한계 때문에 y축의 tick marks가 의미를 가지지는 못한다.  
 따라서 y축의 label은 `scale_y_continuous()`를 사용하여 없애고 `geom_rug()`를 사용하여 그린다.  
+
 <br>
+
 ```{r fig_6_27}
 p + geom_dotplot(binwidth = 0.25) +
   geom_rug() +
@@ -526,9 +625,12 @@ p + geom_dotplot(binwidth = 0.25) +
 
 
 <br>
+
 stack들이 수평방향으로 일정하게 있지 않는데 이건 dotdensity의 알고리즘 때문이다.  
 stack의 위치를 histogram처럼 보여지는 일정한 간격으로 정렬하려면 `method = "histodot"`을 사용한다.
+
 <br>
+
 ```{r fig_6_28}
 p + geom_dotplot(method = "histodot", binwidth = 0.25) +
   geom_rug() +
@@ -539,9 +641,11 @@ p + geom_dotplot(method = "histodot", binwidth = 0.25) +
 
 
 <br>
+
 dots을 가운데로 정렬하여 쌓을 수도 있는데 
 
 <br>
+
 ```{r fig_6_29}
 fig_6291 <- 
   p + geom_dotplot(binwidth = 0.25, stackdir = "center") +
@@ -562,10 +666,13 @@ fig_6291 + fig_6292
 
 <br>
 <br>
+
 ### 6.11 Making multiple dot plots for grouped data
+
 <br>
 
 <br>
+
 ```{r fig_6_30}
 heightweight %>% 
   ggplot(aes(x = sex, y = heightIn)) +
@@ -575,6 +682,7 @@ heightweight %>%
 
 
 <br>
+
 ```{r fig_6_31}
 heightweight %>% 
   ggplot(aes(x = sex, y = heightIn)) +
@@ -585,10 +693,13 @@ heightweight %>%
 
 
 <br>
+
 x값을 numeric으로 사용하기 위해서는 꼭 그룹을 명시해주어야 한다.  
 그렇지 않으면 하나의 그룹으로 인식하기 때문이다.  
 또한 x축의 tick값은 `scale_x_continous()`로 수정하여 factor levels에 맞게 tick label이 출력되도록 해야 한다.  
+
 <br>
+
 ```{r fig_6_32}
 heightweight %>% 
   ggplot(aes(x = sex, y = heightIn)) +
@@ -603,14 +714,19 @@ heightweight %>%
 
 <br>
 <br>
+
 ### 6.12 Making a density plot of two-dimensional data
+
 <br>
 
 <br>
+
 `stat_density2d()`를 사용하여 2D kernel density estimate을 만들 수 있다.   
 먼저 데이터 포인트에 따라 density contour를 그린다.  
 level에 따른 contour 색을 주고 싶다면 `stat_density2d()`에 `aes(color = ..level..)`을 설정한다.  
+
 <br>
+
 ```{r fig_6_33}
 p <- faithful %>% ggplot(aes(x = eruptions, y = waiting))
 
@@ -630,6 +746,7 @@ fig_6331 + fig_6332
 
 
 <br>
+
 ```{r fig_6_34}
 p <- faithful %>% ggplot(aes(x = eruptions, y = waiting))
 
@@ -649,12 +766,15 @@ fig_6341 + fig_6342
 
 
 <br>
+
 contour line을 사용하는 것이 default인데, tiles의 투명도나 fill color에 따른 density estimate를 사용하는 것도 가능하다.  
 one-dimensional density estimate을 사용할 때는 estimate의 bandwidth를 정의해야 한다.  
 x, y bandwidth를 위한 vector는 h에 들어간다. h = c(0.5,5)  
 x, y방향으로 작은 bandwidth를 사용하면 좀 더 가깝게 적합될 수 있지만 overfitted될 수도 있다.  
+
 <br>
-```{r fig_6_34}
+
+```{r fig_6_34a}
 p + stat_density2d(aes(fill = ..density..), 
                    geom = "raster", contour = FALSE)
 

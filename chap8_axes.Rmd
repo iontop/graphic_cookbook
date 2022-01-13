@@ -2,7 +2,9 @@
 title: "chap8_axes"
 author: "J.H AHN"
 date: '2022 1 10 '
-output: html_document
+output: 
+  html_document:
+    toc: TRUE
 ---
 
 ```{r setup, include=FALSE}
@@ -13,11 +15,15 @@ library(MASS)
 
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
 <br>
+
 ### 8.1 Swapping X- and Y-Axes
+
 <br>
 
 <br>
+
 ```{r fig_8_1}
 fig_8011 <- 
   PlantGrowth %>% 
@@ -36,9 +42,12 @@ fig_8011 + fig_8012
 
 
 <br>
+
 때로 축을 바꾸면 아이템의 순서를 거꾸로 배치하여야 할 때가 있다.   
 만약 x변수가 factor라면 `scale_x_discrete(limits=rev(levels(...)))`를 사용하여 순서를 바꿀 수 있다.  
+
 <br>
+
 ```{r fig_8_2}
 PlantGrowth %>% 
   ggplot(aes(x = group, y = weight)) +
@@ -51,12 +60,17 @@ PlantGrowth %>%
 
 <br>
 <br>
+
 ### 8.2 Setting the range of a continuous axis
+
 <br>
 
 <br>
+
 **xlim**과 **ylim**을 사용하여 연속형 변수가 사용되는 축의 최대, 최솟값을 지정할 수 있다.  
+
 <br>
+
 ```{r fig_8_3}
 fig_8031 <- 
   PlantGrowth %>% 
@@ -75,10 +89,13 @@ fig_8031 + fig_8032
 
 
 <br>
+
 `ylim()`은 `scale_y_continuous()`을 이용하여 limit을 설정하는 것이다. (x도 마찬가지)  
 `scale_y_continuous()`을 이용하면 scale만 바꾸는 것으로 데이터가 살아있지만,   
 `coord_cartesian()`를 사용하면 범위 밖의 데이터는 지워진다.
+
 <br>
+
 ```{r fig_8_4}
 fig_8041 <- 
   PlantGrowth %>% 
@@ -99,9 +116,12 @@ fig_8041 + fig_8042
 
 
 <br>
+
 범위를 확장하고 싶을 때는 `expande_limits()`를 사용한다.  
 **하지만 범위를 줄일 수는 없다.**  
+
 <br>
+
 ```{r fig_8_5}
 PlantGrowth %>% 
   ggplot(aes(x = group, y = weight)) +
@@ -114,12 +134,17 @@ PlantGrowth %>%
 
 <br>
 <br>
+
 ### 8.3 Reversing a continuous axis
+
 <br>
 
 <br>
-`scale_y_reverse()` 혹은 `scale_x_reverse()`를 사용하면 축방향을 반대로 돌릴 수 있다.  
+
+`scale_y_reverse()` 혹은 `scale_x_reverse()`를 사용하면 축방향을 반대로 돌릴 수 있다. 
+
 <br>
+
 ```{r fig_8_6}
 PlantGrowth %>% 
   ggplot(aes(x = group, y = weight)) +
@@ -130,8 +155,11 @@ PlantGrowth %>%
 
 
 <br>
+
 `scale_y_reverse()`을 사용하지 않고 유사한 효과를 내려면 아래와 같이 최대, 최솟값의 순서를 바꾸면 된다.  
+
 <br>
+
 ```{r}
 PlantGrowth %>% 
   ggplot(aes(x = group, y = weight)) +
@@ -142,9 +170,12 @@ PlantGrowth %>%
 
 
 <br>
+
 `scale_y_continuous()`처럼 `scale_y_reverse()`는 `ylim()`과 함께 사용할 수 없다. 
 만약 축을 방향을 바꾸면서 range값을 세팅하고 싶다면 `scale_y_reverse()`안에서 limits을 설정해야 한다.  
+
 <br>
+
 ```{r fig_8_7}
 PlantGrowth %>% 
   ggplot(aes(x = group, y = weight)) +
@@ -156,14 +187,19 @@ PlantGrowth %>%
 
 <br>
 <br>
+
 ### 8.4 Changing the order of items on a categorical axis
+
 <br>
 
 <br>
+
 범주형, 이산형 변수 축을 순서대로 정렬하기 위해서는 `scale_x_discrete()` 혹은 `scale_y_discrete()`안에 limits을 설정해야 한다.  
 순서는 매뉴얼로 정해줘야 하고 원하는 순서대로 벡터 형식으로 입력하면 된다.  
 원하는 변수만 보여주고 싶으면 limits에 원하는 변수만 선택한다.  
+
 <br>
+
 ```{r fig_8_8}
 fig_8081 <- 
   PlantGrowth %>% 
@@ -183,8 +219,11 @@ fig_8081 + fig_8082
 
 
 <br>
+
 순서를 거꾸로 하고 싶으면 동일하게 `limits = rev(levels(...))`를 사용한다.  
+
 <br>
+
 ```{r fig_8_9}
 PlantGrowth %>% 
   ggplot(aes(x = group, y = weight)) +
@@ -197,14 +236,19 @@ PlantGrowth %>%
 
 <br>
 <br>
+
 ### 8.5 Setting the scaling ratio of the X- and Y-axes
+
 <br>
 
 <br>
+
 x축과 Y축의 비율을 정하기 위해서는 `coord_fixed()`를 사용한다. 
+
 <br>
 
 <br>
+
 ```{r fig_8_10}
 fig_8101 <- 
   marathon %>% 
@@ -227,10 +271,13 @@ fig_8101 + fig_8102
 
 
 <br>
+
 x, y축 사이의 비율을 1:1이 아닌 다른 특정한 비율을 넣고 싶다면 ratio 값을 설정한다.  
+
 <br>
 
 <br>
+
 ```{r fig_8_11}
 fig_8111 <- 
   marathon %>% 
@@ -255,10 +302,13 @@ fig_8111 + fig_8112
 
 <br>
 <br>
+
 ### 8.6 Setting the positions of tick marks
+
 <br>
 
 <br>
+
 ```{r fig_8_12}
 fig_8121 <- 
   PlantGrowth %>% 
@@ -277,10 +327,13 @@ fig_8121 + fig_8122
 
 
 <br>
+
 이산형 변수가 있는 축에서는 tick mark가 default이다.  
 limits에서 명시한 변수만 순서대로 그려진다.  
 이 상태에서 breaks를 설정하면 레벨을 바꿀 수 있는 반면 삭제하거나 순서를 바꿀 수는 없게된다.  
+
 <br>
+
 ```{r fig_8_13}
 PlantGrowth %>% 
   ggplot(aes(x = group, y = weight)) +
@@ -293,15 +346,22 @@ PlantGrowth %>%
 
 <br>
 <br>
+
 ### 8.7 Removing tick marks and labels
+
 <br>
 
 <br>
+
 tick labels을 삭제하고 싶을 경우에는 `theme(axis.text.y = element_blank())`를 사용하면 된다.  
 이 함수는 연속형 혹은 범주형 변수가 쓰이는 축에 모두 적용된다.  
+
 <br>
+
 tick label은 독자적으로 조절되지만, tic marks와 grid line은 함께 조절되기 때문에 하나만 없앨 수는 없다.  
+
 <br>
+
 ```{r fig_8_14}
 fig_8141 <- 
   PlantGrowth %>% 
@@ -331,12 +391,17 @@ fig_8141 + fig_8142 + fig_8143
 
 <br>
 <br>
+
 ### 8.8 Changing the text of tick labels
+
 <br>
 
 <br>
+
 임의의 tick label을 사용하고 싶다면 breaks와 labels를 사용한다.  
+
 <br>
+
 ```{r fig_8_15}
 fig_8151 <- 
 heightweight %>% 
@@ -356,10 +421,13 @@ fig_8151 + fig_8152
 
 
 <br>
+
 임의의 label을 모두 입력하기 보다는 하나의 포맷으로 정해두고 넣는 경우가 많다.  
 예를 들어 키를 피트(ft)와 인치(in)로 나타낼 때 5'6"와 같이 쓰는 경우다.  
 이런 작업을 하기위해서 먼저 포맷을 맞추는 함수를 만들어 입력된 값을 정해진 포맷으로 반환하게 해야 한다.  
+
 <br>
+
 ```{r}
 footinch_formatter <- function(x) {
   foot <- floor(x/12)
@@ -376,6 +444,7 @@ footinch_formatter(56:64)
 
 
 <br>
+
 ```{r fig_8_16}
 fig_8161 <- 
 heightweight %>% 
@@ -396,9 +465,12 @@ fig_8161 + fig_8162
 
 
 <br>
+
 또 다른 포맷 변환으로 시간을 HH:MM:SS 형태로 바꾸는 것이 있다.
 아래 함수는 분(minute)을 입력하면 시간:분:초의 형태로 변환해 준다.  
+
 <br>
+
 ```{r}
 timeHMS_formatter <- function(x) {
   h <- floor(x/60)
@@ -420,10 +492,13 @@ timeHMS_formatter(c(0.33, 50, 51.25, 59.32, 60, 60.1, 130.23))
 
 <br>
 <br>
+
 ### 8.9 Changing the appearance of tick labels
+
 <br>
 
 <br>
+
 ```{r fig_8_17}
 fig_8171 <- 
   PlantGrowth %>% 
@@ -453,9 +528,12 @@ fig_8171 + fig_8172 + fig_8173
 
 
 <br>
+
 글자를 회전시키는 것외에도 size, style(bold/italic/normal), font family(Times, Helvetica) 등을 `element_text()`를 이용하여 변경할 수 있다.  
 size를 정할 때 쓴 `rel()`은 theme에서 쓰이는 argument로 다른 글자 대비 상대적인 크기를 얼마로 할지 결정하게 해 준다.  
+
 <br>
+
 ```{r fig_8_18}
 PlantGrowth %>% 
   ggplot(aes(x = group, y = weight)) +
@@ -471,12 +549,18 @@ PlantGrowth %>%
 
 <br>
 <br>
+
 ### 8.10 Changing the text of axis labels
-<br>
 
 <br>
-축의 text label을 변경하기 위해서는 `xlab()`, `ylab()`을 이용한다.  
+
+
 <br>
+
+축의 text label을 변경하기 위해서는 `xlab()`, `ylab()`을 이용한다.  
+
+<br>
+
 ```{r fig_8_19}
 fig_8191 <- 
   heightweight %>% 
@@ -497,8 +581,11 @@ fig_8191 + fig_8192
 
 
 <br>
+
 다른 방법으로는 `scale_*_continuous()`에 name으로 설정하는 방법이 있다.  
+
 <br>
+
 ```{r}
 heightweight %>% 
   ggplot(aes(x = ageYear, y = heightIn, color = sex)) +
@@ -509,6 +596,7 @@ heightweight %>%
 
 
 <br>
+
 ```{r fig_8_20}
 heightweight %>% 
   ggplot(aes(x = ageYear, y = heightIn, color = sex)) +
@@ -520,12 +608,17 @@ heightweight %>%
 
 <br>
 <br>
+
 ### 8.11 Removing axis labels
+
 <br>
 
 <br>
+
 축의 label을 지우고 싶으면 `theme(axis.title.x = element_blank())`를 사용한다.  
+
 <br>
+
 ```{r fig_8_21}
 fig_8201 <-   
   PlantGrowth %>% 
@@ -544,11 +637,14 @@ fig_8201 + fig_8202
 
 
 <br>
+
 label을 지우는 다른 방법으로는 빈 값을 넣는 방법이 있다.  
 하지만 이렇게 label을 지우면 원래 글자가 있던 자리의 공간이 글자가 있을 때와 동일하게 유지한다. 
 책에는 xlab을 쓸 때와 element_blank()를 쓸 때가 다르다고 되어 있는데 현재 ggplot2에는 같게 나옴.  
+
 <br>
-```{r fig_8_21}
+
+```{r fig_8_21a}
 fig_8211 <- 
   PlantGrowth %>% 
   ggplot(aes(x = group, y = weight)) +
@@ -570,12 +666,17 @@ fig_8211 + fig_8212
 
 <br>
 <br>
+
 ### 8.12 Chnaging the apperance of axis labels
+
 <br>
 
 <br>
+
 축의 label 외형을 바꾸고 싶으면 `axis.title.x()`를 사용  
+
 <br>
+
 ```{r fig_8_22}
 heightweight %>% 
   ggplot(aes(x = ageYear, y = heightIn, color = sex)) +
@@ -586,6 +687,7 @@ heightweight %>%
 
 
 <br>
+
 ```{r fig_8_23}
 fig_8231 <- 
   heightweight %>% 
@@ -608,10 +710,13 @@ fig_8231 + fig_8232
 
 <br>
 <br>
+
 ### 8.13 Showing lines along the axes
+
 <br>
 
 <br>
+
 ```{r fig_8_24}
 fig_8241 <- 
   heightweight %>% 
@@ -633,6 +738,7 @@ fig_8241 + fig_8242
 
 
 <br>
+
 ```{r fig_8_25}
 fig_8251 <- 
   heightweight %>% 
@@ -659,11 +765,15 @@ fig_8251 + fig_8252
 
 <br>
 <br>
+
 ### 8.14 Using a logarithmic axis
+
 <br>
 
 <br>
+
 ```{r}
+
 Animals
 
 ```
@@ -689,6 +799,7 @@ fig_8261 + fig_8262
 
 
 <br>
+
 ```{r fig_8_27}
 fig_8271 <- 
   Animals %>% 
@@ -714,8 +825,11 @@ fig_8271 + fig_8272
 
 
 <br>
+
 log변환을 하는 다른 방법은 데이터를 로그변환 시키는 방법이 있다.  
+
 <br>
+
 ```{r fig_8_28}
 Animals %>% 
   ggplot(aes(x = log10(body), y = log10(brain), label = rownames(Animals))) +
@@ -725,8 +839,11 @@ Animals %>%
 
 
 <br>
+
 자연로그를 사용하기 위해서는 `scale`package가 필요하다.  
+
 <br>
+
 ```{r fig_8_29}
 Animals %>% 
   ggplot(aes(x = body, y = brain, label = rownames(Animals))) +
@@ -744,8 +861,11 @@ Animals %>%
 
 
 <br>
+
 한 축에만 로그를 쓰는 것도 가능한데 이건 금융관련 데이터를 보여줄 때 유용하다.  
+
 <br>
+
 ```{r}
 aapl
 
@@ -753,6 +873,7 @@ aapl
 
 
 <br>
+
 ```{r fig_8_30}
 fig_8301 <- 
 aapl %>% 
@@ -775,13 +896,18 @@ fig_8301 / fig_8302
 
 <br>
 <br>
+
 ### 8.15 Adding ticks for a logarithmic axis
+
 <br>
 
 <br>
+
 로그가 씌어진 축에 tick mark를 주기 위해서는 `annotate_logticks()`를 사용한다.  
 `annotate_logticks()`는 plot area 내부에 그려지는데 긴 tick mark는 10제곱을 나타내며, 짧은 tick mark는 5제곱을 나타낸다.  
+
 <br>
+
 ```{r fig_8_31}
 Animals %>% 
   ggplot(aes(x = body, y = brain, label = rownames(Animals))) +
@@ -800,11 +926,14 @@ Animals %>%
 
 
 <br>
+
 내용을 보기 쉽게 하기 위해 `theme_bw()`를 사용하고 주눈금 사이에 보조눈금을 나타낸다.  
 보조눈금은 로그 스케일의 5를 가리키는 tick mark와 같은 의미가 아니라 주눈금의 절반 지점에 위치한다.    
 보조눈금을 그릴려면 `scales` package의 `minor_breaks()`를 직접 설정해야 한다.  
 `minor_breaks()`는 log10(5 * 10^(minpow:maxpow)를 log10(5) + minpow:maxpow 형식으로 줄여서 나타낸다.  
+
 <br>
+
 ```{r fig_8_32}
 Animals %>% 
   ggplot(aes(x = body, y = brain, label = rownames(Animals))) +
@@ -826,14 +955,19 @@ Animals %>%
 
 <br>
 <br>
+
 ### 8.16 Making a circular graph
+
 <br>
 
 <br>
+
 `coord_polar()`를 사용하면 원그래프를 그릴 수 있다.  
 예제로 사용할 `wind` 데이터는 하루동안 5분간격으로 풍향(DirCat)과 풍속(SpeedCat)을 측정한 것이다.  
 풍향은 15도 간격으로 범주화가 되어있고, 풍속은 5m/s 단위로 범주화가 되어 있다.  
+
 <br>
+
 ```{r}
 wind
 
@@ -841,10 +975,13 @@ wind
 
 
 <br>
+
 polar plot을 그릴 때는 데이터를 왜곡하여 이해할 수 있는 위험에 주의해야 한다.  
 예를 들어 210도 풍향 부근에는 15개의 15-20m/s의 풍속 관측값이 있고, 13개의 >20m/s 풍속 관측값이 있다.  
 그런데 그냥 봐서는 >20m/s 관측치가 더 많은 것처럼 보이고(정말?? 난 그렇게 안 보이는데... 책에선 그렇다함) 10-15m/s 풍속은 식별하기가 어렵다.  
+
 <br>
+
 ```{r fig_8_33}
 wind %>% 
   ggplot(aes(x = DirCat, fill = SpeedCat)) +
@@ -857,9 +994,12 @@ wind %>%
 
 
 <br>
+
 식별하기 쉽게 범례를 거꾸로 배열하고 다른 팔레트를 사용하고, 아웃라인을 추가한다.  
 구분자는 익숙한 숫자로 바꾼다.  
+
 <br>
+
 ```{r fig_8_34}
 wind %>% 
   ggplot(aes(x = DirCat, fill = SpeedCat)) +
@@ -875,17 +1015,24 @@ wind %>%
 
 
 <br>
+
 시작되는 angle을 지정하는 `start` argument는 이산형 변수를 사용할 때 유용하게 사용된다.  
 시작되는 angle은 라디안으로 나타낸다.  
 Polar coordinates도 다른 geom들처럼 선이나 점을 추가할 수 있다.  
 이 때 주의할 점은 가장 작은 값이 중앙에 배치된다는 점이다.  
 가장 작은 값이 0이면 반경 0 위치에 배치가 되므로 이런 점을 감안하여 limits을 지정해줘야 한다.  
+
 <br>
+
 연속형의 x값을 쓸 때는 가장 작은 값과 가장 큰 값이 합쳐질 수 있다. 
 원하든 원치 않든 이런 현상을 바꾸기 위해서는 limits을 설정해야 한다.  
+
 <br>
+
 마지막으로 polar coordinates의 $theta$는 전체를 둘러싸지 못한다. 즉 시작하는 각도로 지정된 지점을 가로지를 수 없다.  
+
 <br>
+
 ```{r fig_8_35}
 # put mdeaths time series data into a data frame
 md <- data.frame(deaths = as.numeric(mdeaths),
@@ -921,16 +1068,23 @@ fig_8351 + fig_8352
 
 
 <br>
+
 첫번째 문제는 데이터가 1000-2100정도의 값을 가지는데 가장 작은 값은 반경 0의 위치에 있다. (8월 데이터)  
 따라서 최소값이 0부터 시작하도록 바꿔야 한다.  (오른쪽 그림 참조)  
+
 <br>
-두번째 문제는 1월과 12월 - 가장 작은 x값과 가장 큰 x값이 겹쳐서 한 지점에 위치하고 있다.  
+
+두번째 문제는 1월과 12월 - 가장 작은 x값과 가장 큰 x값이 겹쳐서 한 지점에 위치하고 있다. 
 이를 수정하기 위해서 x축 limits을 0-12까지로 변경해야 한다.
 `xlim()`을 사용할 경우 `scale_x_continuous()`를 override함에 주의해야 한다.  
+
 <br>
+
 마지막으로 시작과 끝이 연결되지 않게 해야 한다. 이를 위해서 0월에 해당되는 값을 데이터에 추가해야 하는데 12월과 같은 값을 가지도록 한다.  
 0월 대신에 13월을 만들어서 넣는 것도 가능하다.  
+
 <br>
+
 ```{r fig_8_36}
 fig_8361 <- 
   md %>% 
@@ -962,10 +1116,13 @@ fig_8361 + fig_8362
 
 <br>
 <br>
+
 ### 8.17 Using dates on an axis
+
 <br>
 
 <br>
+
 ```{r}
 economics
 
@@ -973,6 +1130,7 @@ economics
 
 
 <br>
+
 ```{r fig_8_37}
 economics %>% 
   ggplot(aes(x = date, y = psavert)) +
@@ -982,6 +1140,7 @@ economics %>%
 
 
 <br>
+
 ggplot2에서는 Date와 POSIXt 두 가지 time related object를 다룰 수 있는데, Date는 1일 단위, POSIXt는 초 단위를 다룰 수 있다.  
 ```{r}
 # Take a subset of economic
@@ -993,6 +1152,7 @@ econ <- subset(economics,
 
 
 <br>
+
 ```{r fig_8_38}
 fig_8381 <- 
 econ %>% 
@@ -1016,6 +1176,7 @@ fig_8381 / fig_8382
 
 
 <br>
+
 ```{r fig_8_39}
 # Specify breaks as a Date Vector
 datebreaks = seq(as.Date("1992-06-01"), as.Date("1993-06-01"), by = "2 month")
@@ -1031,12 +1192,17 @@ econ %>%
 
 <br>
 <br>
+
 ### 8.18 Using relative times on an axis
+
 <br>
 
 <br>
+
 저장된 숫자가 시간을 의미하는 경우 정해진 때부터 얼마나 시간이 흘렀는지를 표현해야 할 때가 있다.  
+
 <br>
+
 ```{r}
 WWWusage
 

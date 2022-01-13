@@ -2,7 +2,9 @@
 title: "chap3_bar_graphs"
 author: "J.H AHN"
 date: '2022 1 6 '
-output: html_document
+output: 
+  html_document:
+    toc: TRUE
 ---
 
 ```{r setup, include=FALSE}
@@ -13,7 +15,9 @@ library(patchwork)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 <br>
+
 ### 3.2 Grouping bars together
+
 <br>
 
 ```{r}
@@ -32,8 +36,10 @@ ggplot(cabbage_exp, aes(x = Date, y = Weight, fill = Cultivar)) +
 
 
 <br>
+
 Bar 색깔을 설정하기 위해서 `scale_fill_brewer()`이나 `scale_fill_manual()`을 사용  
 아래 예시에서는 **RColorBrewer**에 있는 **Pastel1**palette를 사용  
+
 <br>
 
 
@@ -46,6 +52,7 @@ ggplot(cabbage_exp, aes(x = Date, y = Weight, fill = Cultivar)) +
 
 
 <br>
+
 주의해야 할 점은 categorical variables 조합에서 빠진 것이 있으면 bar는 그려지지 않는다.  
 만약 마지막 행을 삭제하면 아래와 같이 그려진다.
 
@@ -65,7 +72,9 @@ ggplot(ce, aes(x = Date, y = Weight, fill = Cultivar)) +
 
 <br>
 <br>
+
 ### 3.3 Making a bar graph of counts
+
 <br>
 
 ```{r}
@@ -82,8 +91,10 @@ ggplot(diamonds, aes(x = cut)) +
 
 
 <br>
+
 `geom_bar()`는 default값으로 *stat = "bin"*으로 처리한다.  
 그래서 아래의 예처럼 연속형 변수로 X축을 설정하면 히스토그램을 얻게 된다.  
+
 <br>
 
 
@@ -96,7 +107,9 @@ ggplot(diamonds, aes(x = carat)) +
 
 <br>
 <br>
+
 ### 3.4 Using colors in a bar graph
+
 <br>
 
 
@@ -138,11 +151,13 @@ ggplot(upc, aes(x = State, y = Change, fill = Region)) +
 
 <br>
 <br>
+
 ### 3.5 Coloring negative and positive bars differently
+
 <br>
 
-
 `climate`data에서 1900년이후 Berkeley의 데이터만 추출하여 값이 양수인지 음수인지 판단한 **pos**라는 새로운 열을 만든다.  
+
 <br>
 
 ```{r}
@@ -171,9 +186,11 @@ csub %>%
 
 
 <br>
+
 위와 같은 bar graph는 두 가지 문제가 있다.  
 첫번째는 일반적으로 양수를 빨간색, 음수를 파란색으로 표현하는데 반대로 색이 칠해져있고, 두번째는 범례가 필요없어 보인다.  
 문제점을 없애기 위해서 `scale_fill_manual()`로 색을 지정해주고, 범례를 없애준다.
+
 <br>
 
 
@@ -190,13 +207,17 @@ csub %>%
 
 <br>
 <br>
+
 ### 3.6 Adjusting bar width and spacing
+
 <br>
 
 
 <br>
+
 bar의 넓이를 조절하고 싶으면 `geom_bar()`에서 `width`값으로 가능하다.  
 기본값은 0.9로 되어 있다.  
+
 <br>
 
 ```{r}
@@ -227,9 +248,11 @@ pg1 + pg2 + pg3
 
 
 <br>
+
 grouped bar는 기본적으로 bar 사이에 space가 없도록 되어 있다.  
 같은 group의 bar 사이에 space를 주기 위해서는 width를 줄이고 `position_dodge()`값을 width보다 크게 하면 된다. 
 `position = "dodge"`는 position = position_dodge(0.9)와 동일한 표현이므로 값을 조절할 필요가 있을 때만 `position_dodge()`로 쓰면 된다.  
+
 <br>
 
 
@@ -251,7 +274,9 @@ cab1 / cab2
 
 <br>
 <br>
+
 ### 3.7 Making a stacked bar graph
+
 <br>
 
 
@@ -264,9 +289,11 @@ cabbage_exp %>%
 
 
 <br>
+
 위 stacked bar를 이해하기 위해서는 데이터 구조를 알아야 한다.  
 `cabbage_exp`data를 보면 Date는 3Lv - d16, d20, d21 - 로 되어 있고, Cultivar는 2Lv - c39, c52 - 로 되어있다.  
 각각의 조합에 따른 Weight가 나열되어 있다.  
+
 <br>
 
 
@@ -277,7 +304,9 @@ skimr::skim(cabbage_exp)
 
 
 <br>
+
 만약 legend의 순서를 바꾸고 싶다면 (c39가 아래, c52가 위로) `guides()`에서 fill 속성을 `guide_legend(reverse = TRUE)`으로 설정하면 된다.
+
 <br>
 
 
@@ -291,8 +320,10 @@ cabbage_exp %>%
 
 
 <br>
+
 stacking순서를 바꾸고 싶다면 `order = desc()`를 `aes()`에 넣어주면 된다고 책에는 되어 있으나, 이는 ggplot2 ver.2.0.0에서 부터는 사용되지 않는다.  
 따라서 stacking 순서를 바꾸고 싶다면 `geom_bar()`에 `position = position_stack(reverse = TRUE)`으로 설정해야 한다.  
+
 <br>
 
 
@@ -315,7 +346,9 @@ cabbage_exp %>%
 
 <br>
 <br>
+
 ### 3.8 Making a proportional stacked bar graph
+
 <br>
 
 
@@ -330,8 +363,10 @@ cabbage_exp %>%
 
 
 <br>
+
 각 그룹에 포함된 개체들의 비율을 알아야 할 때가 있다.  
 예를 들어 d16에 있는 c39와 c51의 비율을 나타내려면 책과 달리 `position = "fill"`을 입력하여 간단하게 구현이 가능하다.  
+
 <br>
 
 ```{r fig_3_20}
@@ -345,7 +380,9 @@ cabbage_exp %>%
 
 
 <br>
+
 앞서 설명한 방법과 동일하게 순서를 바꿔 stacking을 하고 싶으면 `position_fill()`에 reverse = TRUE로 설정하면 된다.  
+
 <br>
 
 ```{r fig_3_21}
@@ -360,12 +397,16 @@ cabbage_exp %>%
 
 <br>
 <br>
+
 ### 3.9 Adding labels to a bar graph
+
 <br>
 
 <br>
+
 `interaction()`함수를 사용하여 x축 값을 지정한 bar graph를 그림. 
 vertical justification(vjust)를 이용하여 label값의 위, 아래 위치를 지정할 수 있다.  
+
 <br>
 
 ```{r fig_3_22}
@@ -387,8 +428,10 @@ label1 / label2
 
 
 <br>
+
 때에 따라 위쪽의 label값이 잘려서 나오는 경우가 있다.  
 이럴 때는 Y축의 범위(y limit)을 조절하여 나오게 할 수도 있고, label이 출력되는 위치를 바꿀 수도 있다.  
+
 <br>
 
 ```{r fig_3_22_ylim}
@@ -427,11 +470,13 @@ label1 / label2
 
 
 <br>
+
 grouped bar의 경우 dodging width를 정하기 위해서 `position = position_dodge()`를 사용했다. 
 `geom_text()`도 동일하게 `position = position_dodge()`를 적용해야 가운데 몰린 label값이 각 dodge별로 출력된다.  
 기본값은 동일하게 0.9이다.  
 만약 bar가 좁을 경우는 label값을 `size`를 이용하여 줄여야 한다.  
 `size`의 default값은 5이기 때문에 줄이기 위해서는 5보다 작은 값을 입력해줘야 한다.  
+
 <br>
 
 ```{r fig_3_23}
@@ -446,8 +491,10 @@ cabbage_exp %>%
 
 
 <br>
+
 ggplot2 ver.2.2.0 이후 Stacked bar graph에 label을 넣는 방법이 간단해졌다.  
 `ggplot()`이나 `geom_text()`의 `aes()`에 label을 어느 값으로 할 지 지정해주고, `geom_text()`에서 `position = position_stack()`으로 위치만 정해주면 된다.  
+
 <br>
 
 
@@ -464,7 +511,9 @@ cabbage_exp %>%
 
 <br>
 <br>
+
 ### 3.10 Making a cleveland dot plot
+
 <br>
 
 
@@ -485,11 +534,13 @@ tophit %>%
 
 
 <br>
+
 name은 character vector이므로 알파벳 순서로 plot이 되었음.  
 avg 순서로 배치하기 위해서는 name의 factor level을 정해주어야 함.  
 그러기 위해서 `reorder()`를 사용하면 name column을 factor로 바꿔주고 avg에 따른 level로 정렬해준다.  
 <br>
 추가적으로 cleveland dot plot의 외형을 가지게 하기 위해 X축의 grid를 없애고 Y축 grid를 적절하게 변경한다.  
+
 <br>
 
 ```{r fig_3_28}
@@ -506,8 +557,10 @@ tophit %>%
 
 
 <br>
+
 필요에 따라 X-Y축을 바꿀 수도 있다.  
 책의 예제와는 다르게 `coord_flip()`를 써서 간단하게 바꾸었다.  
+
 <br>
 
 ```{r fig_3_29}
@@ -526,8 +579,10 @@ tophit %>%
 
 
 <br>
+
 lg에 따라 point 색깔을 다르게 하고 점이 있는데까지만 줄이 그어질 수 있게 `geom_segment()`를 사용한다.  
 `geom_segment()`를 사용할 때는 x, y, xend, yend를 입력해 주어야 한다.  
+
 <br>
 
 ```{r fig_3_30_1}

@@ -2,7 +2,9 @@
 title: "chap10_legends"
 author: "J.H AHN"
 date: '2022 1 11 '
-output: html_document
+output: 
+  html_document:
+    toc: TRUE
 ---
 
 ```{r setup, include=FALSE}
@@ -15,10 +17,13 @@ knitr::opts_chunk$set(echo = TRUE)
 
 <br>
 <br>
+
 ### 10.1 Removing the legend
+
 <br>
 
 <br>
+
 ```{r fig_10_1} 
 fig_10011 <- 
   PlantGrowth %>% 
@@ -37,8 +42,11 @@ fig_10011 + fig_10012
 
 
 <br>
+
 legend를 없애는 다른 방법으로는 `scale_fill_discrete(guide = "none")`를 사용하는 방법과 `theme(legend.position = "none")를 사용하는 방법이 있다.  
+
 <br>
+
 ```{r}
 fig_10013 <- 
   PlantGrowth %>% 
@@ -62,7 +70,9 @@ fig_10013 + fig_10014
 
 <br>
 <br>
+
 ### 10.2 Changing the position of a legend
+
 <br>
 
 <br>
@@ -95,6 +105,7 @@ fig_10021 + fig_10022 + fig_10023
 
 
 <br>
+
 ```{r fig_10_4}
 fig_10041 <- 
   PlantGrowth %>% 
@@ -120,13 +131,18 @@ fig_10041 + fig_10042
 
 <br>
 <br>
+
 ### 10.3 Changing the order of items in a legend
+
 <br>
 
 <br>
+
 `scale_fill_discrete(limits = ...)`으로 legend의 순서를 바꿀 수 있다.  
 하지만 실제 축에서 순서는 바뀌지 않는데 축에서 데이터의 순서까지 바꾸려면 `scale_x_discrete(limits = ...)`을 사용해야 한다.  
+
 <br>
+
 ```{r fig_10_5}
 fig_10051 <- 
   PlantGrowth %>% 
@@ -145,10 +161,13 @@ fig_10051 + fig_10052
 
 
 <br>
+
 기본적으로 group은 fill 속성에 따라 mapping되어 있다.  
 그래서 `scale_fill_discrete()`를 사용하여 factor level에 따라 색깔이 부여된 것을 변경할 수 있다.  
 따라서 다른 `scale_fill_xxx()`함수를 이용하면 그룹별로 맵핑된 속성들을 변경할 수 있다.  
+
 <br>
+
 ```{r fig_10_6}
 fig_10061 <- 
   PlantGrowth %>% 
@@ -170,10 +189,14 @@ fig_10061 + fig_10062
 
 <br>
 <br>
+
 ### 10.4 Reversing the order of items in a legend
-<br>
 
 <br>
+
+
+<br>
+
 ```{r fig_10_7}
 fig_10071 <- 
   PlantGrowth %>% 
@@ -199,10 +222,13 @@ fig_10071 + fig_10072 + fig_10073
 
 <br>
 <br>
+
 ### 10.5 Changing a legend title
+
 <br>
 
 <br>
+
 ```{r fig_10_8}
 fig_10081 <- 
   PlantGrowth %>% 
@@ -227,6 +253,7 @@ fig_10081 + fig_10082 + fig_10083
 
 
 <br>
+
 ```{r fig_10_9}
 fig_10091 <- 
   heightweight %>% 
@@ -247,6 +274,7 @@ fig_10091 + fig_10092
 
 
 <br>
+
 ```{r fig_10_10}
 fig_10101 <- 
   heightweight %>% 
@@ -272,12 +300,17 @@ fig_10101 + fig_10102 + fig_10103
 
 <br>
 <br>
+
 ### 10.6 Changing the appearance of a legend title
+
 <br>
 
 <br>
+
 legend tile을 변경하기 위해서는 `theme(legend.title = element_text())`를 사용함.  
+
 <br>
+
 ```{r fig_10_11}
 fig_10111 <- 
   PlantGrowth %>% 
@@ -301,11 +334,15 @@ fig_10111 + fig_10112
 
 
 <br>
+
 <br>
+
 ### 10.7 Removing a legend title
+
 <br>
 
 <br>
+
 ```{r fig_10_12}
 fig_10121 <- 
   PlantGrowth %>% 
@@ -326,10 +363,13 @@ fig_10121 + fig_10122
 
 <br>
 <br>
+
 ### 10.8 Changing the labels in a legend
+
 <br>
 
 <br>
+
 ```{r fig_10_13}
 fig_10131 <- 
   PlantGrowth %>% 
@@ -350,8 +390,11 @@ fig_10131 + fig_10132
 
 
 <br>
+
 만약 legend item의 순설르 변경하면 label도 동일한 순서로 바꿔줘야 한다.  
+
 <br>
+
 ```{r fig_10_14}
 PlantGrowth %>% 
   ggplot(aes(x = group, y = weight, fill = group)) +
@@ -364,6 +407,7 @@ PlantGrowth %>%
 
 
 <br>
+
 ```{r fig_10_15}
 fig_10151 <- 
   heightweight %>% 
@@ -387,12 +431,17 @@ fig_10151 + fig_10152
 
 <br>
 <br>
+
 ### 10.9 Changing the appearance of legend labels
+
 <br>
 
 <br>
+
 legend labels을 변경하기 위해서는 `theme(legend.text = element_text())`를 사용한다.  
+
 <br>
+
 ```{r fig_10_16}
 fig_10161 <- 
   PlantGrowth %>% 
@@ -413,14 +462,19 @@ fig_10161 + fig_10162
 
 <br>
 <br>
+
 ### 10.10 Using labels with multiple lines of text
+
 <br>
 
 <br>
+
 legend의 label을 한줄이상 쓰게 되면 서로 겹치는 현상이 발생함.  
 이를 해결하기 위해서 legend key의 높이를 증가시키고 줄 사이 공간을 줄여야 함.  
 높이를 설정하기 위해서 `grid`package의 `unit()`을 사용함.  
+
 <br>
+
 ```{r fig_10_17}
 fig_10171 <- 
   PlantGrowth %>% 

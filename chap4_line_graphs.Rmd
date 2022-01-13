@@ -2,7 +2,9 @@
 title: "chap4_line_graphs"
 author: "J.H AHN"
 date: '2022 1 6 '
-output: html_document
+output: 
+  html_document:
+    toc: TRUE
 ---
 
 ```{r setup, include=FALSE}
@@ -13,7 +15,9 @@ library(patchwork)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 <br>
+
 ### 4.1 Making a basic line graph
+
 <br>
 
 ```{r}
@@ -31,10 +35,12 @@ BOD %>%
 
 
 <br>
+
 line graph는 이산형(discrete) 혹은 연속형(continuous) 변수의 X축 값을 가질 수 있다.  
 예를 들어 demand변수는 숫자형이지만 `factor()`를 써서 categorical variable로 처리할 수도 있다.  
 X축 변수가 factor일 때는 `aes(group=1)`으로 써줘야 `ggplot()`이 data point가 별개의 것이 아니고 선으로 이어줘야 한다고 인식한다.  
-factor형일 경우, 왜 group을 써줘야 하는지는 이후에 설명된다.  
+factor형일 경우, 왜 group을 써줘야 하는지는 이후에 설명된다. 
+
 <br>
 
 ```{r fig_4_2}
@@ -49,14 +55,18 @@ BOD1 %>%
 
 
 <br>
+
 BOD data에는 Time = 6에 해당하는 정보가 없다.  
 그래서 Time을 factor형으로 바꾸면 categorical variable로 인식해서 X=6에 해당하는 값을 나타내지 않는다.  
+
 <br>
 
 
 <br>
+
 ggplot2에서 y 범위는 데이터에 있는 y값들이 모두 들어갈 수 있게 자동으로 정해지는데 때에 따라 y가 0에서 시작하는 것이 필요할 경우가 있다.   
 이럴 경우 `ylim()`을 설정하거나, `expand_limits()`을 쓰는 방법이 있다.  
+
 <br>
 
 ```{r fig_4_3}
@@ -87,11 +97,15 @@ ex_ylim + ex_exlim + ex_scale
 
 <br>
 <br>
+
 ### 4.3 Making a line graph with multiple lines
+
 <br>
 
 <br>
+
 line graph에서 이산형 변수에 따라 선모양이나 선색깔을 다르게 하고 싶을 때는 아래와 같은 방법을 사용한다.  
+
 <br>
 
 ```{r}
@@ -106,6 +120,7 @@ tg_old
 
 
 <br>
+
 ```{r}
 tg <- 
   ToothGrowth %>% 
@@ -118,6 +133,7 @@ tg
 
 
 <br>
+
 ```{r}
 diff_line <- 
   tg %>% 
@@ -135,8 +151,10 @@ diff_line + diff_type
 
 
 <br>
+
 `tg` data를 보면 dose는 실제로 세가지 값(0.5, 1, 2)만 있다.  
 만약 이것을 연속적인 값으로 보지 않고 범주로 본다면 dose값을 factor로 변환하면 된다.  
+
 <br>
 ```{r}
 str(tg)
@@ -145,8 +163,10 @@ str(tg)
 
 
 <br>
+
 dose를 factor형으로 바꾼 후에 **group = supp**라고 추가 한 것에 주의해야 한다.  
 이 구문을 넣지 않으면 ggplot()은 어떻게 데이터들을 묶어서 선을 그려야 할지 모른다.  
+
 <br>
 
 ```{r fig_4_7}
@@ -158,8 +178,11 @@ tg %>%
 
 
 <br>
+
 또 다른 흔한 문제 중 하나는 그룹을 잘못지어 톱니 이빨모양의 패턴이 나타나는 것이다.
+
 <br>
+
 ```{r fig_4_8}
 tg %>% 
   ggplot(aes(x = dose, y = length)) + 
@@ -170,16 +193,21 @@ tg %>%
 
 
 <br>
+
 이런 현상은 하나의 x값에 대응하는 여러개의 y값이 있을 때 발생한다.  
 ggplot()은 모두 하나의 그룹으로 보기 때문에 이러한 현상이 발생하는 것이므로, 각각의 그룹을 지정해 주어야 한다.  
 만약 이산형 변수가 aes()에서 color나 linetype으로 맵핑되어있으면 자동으로 그룹별로 선을 그려주는데, 만약 aes()에서 맵핑하지 않은 다른 변수로 그룹핑을 하려면 `group`를 사용해서 묶어줘야 한다.  
+
 <br>
 
 <br>
+
 만약 선을 따라 점을 넣는다면 형태나 shape이나 color와 같은 속성을 줄 수 있다.  
+
 <br>
 
 <br>
+
 ```{r fig_4_9}
 shape_pt <- 
   tg %>% ggplot(aes(x = dose, y = length, shape = supp)) +
@@ -198,10 +226,12 @@ shape_pt + color_pt
 
 
 <br>
+
 때로 두 점이 겹쳐져서 구별이 안 될 경우가 있다.  
 이럴 때는 `position = position_dodge()`를 이용하여 점들을 좌우로 이동시켜 모두 보이게 만들 수 있다.  
 `position_dodge()`값을 줄 때는 line에도 줄 수 있고, point에도 줄 수 있다.  
 일반적으로 Line과 Point를 동시에 이동시켜야 선과 점이 같이 움직인다.  
+
 <br>
 
 ```{r}
@@ -222,10 +252,13 @@ shape_pt_dodge + color_pt_dodge
 
 <br>
 <br>
+
 ### 4.4 Changing the apperance of lines
+
 <br>
 
 <br>
+
 ```{r fig_4_11}
 BOD %>% 
   ggplot(aes(x = Time, y = demand)) +
@@ -235,8 +268,10 @@ BOD %>%
 
 
 <br>
+
 여기에 선을 하나 더 그릴 경우 선의 색깔은 팔레트를 이용하여 나오게 할 수 있다.  
 `scale_color_brewer()`이나 `scale_color_manual()`을 사용하면 된다.  
+
 <br>
 
 <br>
@@ -250,11 +285,14 @@ tg %>%
 
 
 <br>
+
 만약 모든 선에 똑같은 색깔을 주고 싶다면 aes()밖에서 색을 지정해주면 된다.  
 size나 linetype, shape도 동일하다.  
+
 <br>
 
 <br>
+
 ```{r fig_4_13}
 color_set <- 
   tg %>% 
@@ -275,7 +313,9 @@ color_set + shape_set
 
 <br>
 <br>
+
 ### 4.5 Changing the apperance of Points
+
 <br>
 
 
@@ -324,7 +364,9 @@ tg %>%
 
 <br>
 <br>
+
 ### 4.6 Making a graph with a shaded area
+
 <br>
 
 
@@ -355,9 +397,11 @@ sunspotyear %>%
 
 
 <br>
+
 default로 `geom_area()`는 dark grey에 no outline으로 그려진다.  
 색을 바꾸기 위해서는 fill을 설정하고 alpha값으로 투명도를 설정한다.  
 outline은 color를 설정하여 그릴 수 있다.  
+
 <br>
 ```{r fig_4_18}
 sunspotyear %>% 
@@ -369,9 +413,12 @@ sunspotyear %>%
 
 
 <br>
+
 전체 면적에 걸쳐 outline을 그리면 shade area의 처음과 끝 부분, 바닥면까지 선이 그어졌었다.  
 이런 문제를 피하기 위해서 outline을 넣지말고, `geom_line()` layer를 추가하라고 되어있으나, 현재 버전에서는 geom_line()으로 그리는 것과 outline을 넣는 것과 동일하다.
+
 <br>
+
 
 <br>
 ```{r fig_4_19}
@@ -396,7 +443,7 @@ uspopage
 
 
 <br>
-```{r fig_4_20}
+```{r fig_4_20a}
 uspopage %>% 
   ggplot(aes(x = Year, y = Thousands, fill = AgeGroup)) +
   geom_area()

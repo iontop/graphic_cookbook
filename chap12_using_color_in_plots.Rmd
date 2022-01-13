@@ -2,7 +2,9 @@
 title: "chap12_using_color_in_plots"
 author: "J.H AHN"
 date: '2022 1 11 '
-output: html_document
+output: 
+  html_document:
+    toc: TRUE
 ---
 
 ```{r setup, include=FALSE}
@@ -15,10 +17,13 @@ knitr::opts_chunk$set(echo = TRUE)
 
 <br>
 <br>
+
 ### 12.1 Setting the colors of objects
+
 <br>
 
 <br>
+
 ```{r fig_12_1}
 fig_12011 <- 
   mtcars %>% 
@@ -38,10 +43,13 @@ fig_12011 + fig_12012
 
 <br>
 <br>
+
 ### 12.2 Mapping variables to colors
+
 <br>
 
 <br>
+
 ```{r fig_12_2}
 fig_12021 <- 
   cabbage_exp %>% 
@@ -59,6 +67,7 @@ fig_12021 + fig_12022
 
 
 <br>
+
 ```{r fig_12_3}
 mtcars %>% 
   ggplot(aes(x = wt, y = mpg, color = factor(cyl))) +
@@ -69,10 +78,13 @@ mtcars %>%
 
 <br>
 <br>
+
 ### 12.3 Using a different palette for a discrete variable
+
 <br>
 
 <br>
+
 ```{r fig_12_4}
 fig_12041 <- 
   uspopage %>% 
@@ -91,8 +103,11 @@ fig_12041 + fig_12042
 
 
 <br>
+
 `scale_color_hue()`에서 h = range of hues to use, in [0, 360], c = chroma (intensity of colour), maximum value varies depending on combination of hue and luminance., l = luminance (lightness), in [0, 100]를 의미한다.  
+
 <br>
+
 ```{r fig_12_5}
 fig_12051 <- 
   heightweight %>% 
@@ -111,6 +126,7 @@ fig_12051 + fig_12052
 
 
 <br>
+
 ```{r fig_12_6}
 library(RColorBrewer)
 display.brewer.all()
@@ -119,6 +135,7 @@ display.brewer.all()
 
 
 <br>
+
 ```{r fig_12_7}
 uspopage %>% 
   ggplot(aes(x = Year, y = Thousands, fill = AgeGroup)) +
@@ -130,6 +147,7 @@ uspopage %>%
 
 
 <br>
+
 ```{r fig_12_8}
 fig_12081 <- 
   uspopage %>% 
@@ -150,10 +168,13 @@ fig_12081 + fig_12082
 
 <br>
 <br>
+
 ### 12.4 Using a manually defined palette for a discrete variable
+
 <br>
 
 <br>
+
 ```{r fig_12_9}
 fig_12091 <- 
   heightweight %>% 
@@ -175,10 +196,13 @@ fig_12091 + fig_12092
 
 <br>
 <br>
+
 ### 12.5 Using a colorblind-friend palette
+
 <br>
 
 <br>
+
 ```{r fig_12_10}
 cb_palette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442",
                 "#0072B2", "#D55E00", "#CC79A7")
@@ -193,8 +217,11 @@ uspopage %>%
 
 
 <br>
+
 경우에 따라 검은색 대신에 회색을 써도 됨.  
+
 <br>
+
 ```{r}
 c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442","#0072B2", "#D55E00", "#CC79A7")
 scales::show_col(c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442","#0072B2", "#D55E00", "#CC79A7"))
@@ -204,10 +231,13 @@ scales::show_col(c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442","#0072B
 
 <br>
 <br>
+
 ### 12.6 Using a manually defined palette for a continuous variable
+
 <br>
 
 <br>
+
 ```{r fig_12_12}
 fig_12121 <- 
   heightweight %>% 
@@ -247,11 +277,14 @@ scales::show_col(c(scales::muted("#FF0000"), "#FF0000", scales::muted("#0000FF")
 
 <br>
 <br>
+
 ### 12.7 Coloring a shaded region based on value
+
 <br>
 
 
 <br>
+
 ```{r}
 cb <- 
   climate %>% 
@@ -264,10 +297,13 @@ cb
 
 
 <br>
+
 자세히 보면 0부근에 두 색이 겹쳐져 있는 것을 발견할 수 있다.  
 두 색깔 영역이 각각의 데이터로 연결된 하나의 다각형으로 묶여져 있어 발생하는 현상이다.  
 이런 현상을 방지하기 위해서 `approx()`를 사용하여 interpolation 시켜줘야 한다.  
+
 <br>
+
 ```{r fig_12_13}
 cb %>% 
   ggplot(aes(x = Year, y = Anomaly10y)) +
@@ -295,6 +331,7 @@ cbi
 
 
 <br>
+
 ```{r}
 cbi %>% 
   ggplot(aes(x = Year, y = Anomaly10y)) +

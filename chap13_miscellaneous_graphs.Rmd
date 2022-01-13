@@ -2,7 +2,9 @@
 title: "chap13_miscellaneous_graphs"
 author: "J.H AHN"
 date: '2022 1 12 '
-output: html_document
+output: 
+  html_document:
+    toc: TRUE
 ---
 
 ```{r setup, include=FALSE}
@@ -632,9 +634,9 @@ mtext3d("MPG",          edge = "z--", line = 3)
 
 ```{r}
 
-plot3d(mtcars$wt, mtcars$disp, mtcars$mpg, type = "s", size = 0.75, lit = FALSE)
-
-rgl.snapshot('3dplot.png', fmt = 'png')
+# plot3d(mtcars$wt, mtcars$disp, mtcars$mpg, type = "s", size = 0.75, lit = FALSE)
+# 
+# rgl.snapshot('3dplot.png', fmt = 'png')
 
 ```
 
@@ -648,9 +650,9 @@ rgl.snapshot('3dplot.png', fmt = 'png')
 
 ```{r}
 
-rgl.postscript('3dplot.pdf', fmt = 'pdf')
-
-rgl.postscript('3dplot.ps', fmt = 'ps')
+# rgl.postscript('3dplot.pdf', fmt = 'pdf')
+# 
+# rgl.postscript('3dplot.ps', fmt = 'ps')
 
 ```
 
@@ -662,10 +664,10 @@ rgl.postscript('3dplot.ps', fmt = 'ps')
 
 ```{r}
 # Save the current viewpoint
-view <- par3d("userMatrix")
+# view <- par3d("userMatrix")
 
 # Restore the saved viewpoint
-par3d(userMatrix = view)
+# par3d(userMatrix = view)
 
 ```
 
@@ -676,7 +678,7 @@ script를 저장하기 위해서 `dput()`를 사용하여 script에 복붙한다
 <br>
 
 ```{r}
-dput(view)
+# dput(view)
 
 ```
 
@@ -690,7 +692,7 @@ view <- structure(c(0.907931625843048, 0.267511069774628, -0.322642296552658,
 0, -0.0821993798017502, 0.868516683578491, 0.488796472549438,
 0, 0, 0, 0, 1), .Dim = c(4L, 4L))
 
-par3d(userMatrix = view)
+# par3d(userMatrix = view)
 
 ```
 
@@ -704,10 +706,10 @@ par3d(userMatrix = view)
 3D 그래프를 자동으로 돌려가며 모든 뷰에서 보고 싶을 때는 `play3d()`를 사용한다.
 
 ```{r}
-library(rgl)
-plot3d(mtcars$wt, mtcars$disp, mtcars$mpg, type = "s", size = 0.75, lit = FALSE)
+# library(rgl)
+# plot3d(mtcars$wt, mtcars$disp, mtcars$mpg, type = "s", size = 0.75, lit = FALSE)
 
-play3d(spin3d())
+# play3d(spin3d())
 
 ```
 
@@ -720,7 +722,7 @@ default로 z축 방향으로 break command가 들어올 때까지 회전을 하�
 
 ```{r}
 # Spin on x-axis, at 4 rpm, for 20 seconds
-play3d(spin3d(axis = c(1,0,0), rpm = 4), duration = 20)
+# play3d(spin3d(axis = c(1,0,0), rpm = 4), duration = 20)
 
 
 ```
@@ -735,7 +737,7 @@ play3d(spin3d(axis = c(1,0,0), rpm = 4), duration = 20)
 
 ```{r}
 # Spin on z axis, at 4 rpm, for 15 seconds
-movie3d(spin3d(axis = c(0,0,1), rpm = 4), duration = 15, fps = 50)
+# movie3d(spin3d(axis = c(0,0,1), rpm = 4), duration = 15, fps = 50)
 
 
 ```
@@ -1364,7 +1366,7 @@ shapefile을 사용하려면 `sf`package에 있는 `sf_read()`를 `geom_sf()`와
 library(sf)
 
 # Load the shapefile
-taiwan_shp <- st_read("fig/TWN_adm/TWN_adm2.shp")
+# taiwan_shp <- st_read("fig/TWN_adm/TWN_adm2.shp")
 #> Reading layer `TWN_adm2' from data source 
 #>   `/Users/runner/work/rgcookbook/rgcookbook/fig/TWN_adm/TWN_adm2.shp' 
 #>   using driver `ESRI Shapefile'
@@ -1374,13 +1376,13 @@ taiwan_shp <- st_read("fig/TWN_adm/TWN_adm2.shp")
 #> Bounding box:  xmin: 116.71 ymin: 20.6975 xmax: 122.1085 ymax: 25.63431
 #> Geodetic CRS:  WGS 84
 
-ggplot(taiwan_shp) +
-  geom_sf()
+# ggplot(taiwan_shp) +
+#   geom_sf()
 
 ```
 
 ```{r}
-taiwan_shp
+# taiwan_shp
 
 #> Simple feature collection with 22 features and 11 fields
 #> Geometry type: MULTIPOLYGON
@@ -1414,11 +1416,11 @@ taiwan_shp
 
 ```{r fig_13_40}
 # Remove rows for which ENGTYPE_2 is NA; otherwise NA will show in the legend
-taiwan_shp_mod <- taiwan_shp
-taiwan_shp_mod <- taiwan_shp[!is.na(taiwan_shp$ENGTYPE_2), ]
-
-ggplot(taiwan_shp_mod) +
-  geom_sf(aes(fill = ENGTYPE_2))
+# taiwan_shp_mod <- taiwan_shp
+# taiwan_shp_mod <- taiwan_shp[!is.na(taiwan_shp$ENGTYPE_2), ]
+# 
+# ggplot(taiwan_shp_mod) +
+#   geom_sf(aes(fill = ENGTYPE_2))
 
 ```
 

@@ -2,7 +2,9 @@
 title: "chap11_facets"
 author: "J.H AHN"
 date: '2022 1 11 '
-output: html_document
+output: 
+  html_document:
+    toc: TRUE
 ---
 
 ```{r setup, include=FALSE}
@@ -15,7 +17,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 <br>
 <br>
+
 ### 11.1 Splitting data into subplots with facets
+
 <br>
 
 <br>
@@ -46,6 +50,7 @@ plot_spacer() + fig_11012 + fig_11011 + fig_11013 + plot_layout(widths = c(1,4),
 
 
 <br>
+
 ```{r}
 mpg %>% 
   ggplot(aes(x = displ, y = hwy)) +
@@ -57,10 +62,13 @@ mpg %>%
 
 <br>
 <br>
+
 ### 11.2 Using facets with different axes
+
 <br>
 
 <br>
+
 ```{r fig_11_2}
 fig_11021 <- 
   mpg %>% 
@@ -83,10 +91,13 @@ fig_11021 + fig_11022
 
 <br>
 <br>
+
 ### 11.3 Changing the text of facet labels
+
 <br>
 
 <br>
+
 ```{r}
 mpg2 <- mpg
 
@@ -100,6 +111,7 @@ mpg2 <-
 
 
 <br>
+
 ```{r fig_11_4}
 fig_11041 <- 
   mpg %>% 
@@ -121,9 +133,12 @@ fig_11041 + fig_11042
 
 
 <br>
+
 `facet_grid()`나 `facet_wrap()`은 `labeller()`함수를 사용하여 label을 정할 수 있다.  
 이 labeller에 있는 `label_both()`는 변수의 이름과 값을 각각의 facet에 label로 출력해준다.  
+
 <br>
+
 ```{r}
 mpg3 <- mpg
 
@@ -158,12 +173,17 @@ fig_11051 + fig_11052
 
 <br>
 <br>
+
 ### 11.4 Changing appearance of facet labels and headers
+
 <br>
 
 <br>
+
 size=1의 의미는 사각형에 1mm 두께의 외곽선을 그리라는 것  
+
 <br>
+
 ```{r fig_11_6}
 cabbage_exp %>% 
   ggplot(aes(x = Cultivar, y = Weight)) +

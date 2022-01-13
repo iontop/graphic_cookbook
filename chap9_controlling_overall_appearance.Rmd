@@ -2,7 +2,9 @@
 title: "chap9_controlling_overall_appearance"
 author: "J.H AHN"
 date: '2022 1 11 '
-output: html_document
+output: 
+  html_document:
+    toc: TRUE
 ---
 
 ```{r setup, include=FALSE}
@@ -15,12 +17,17 @@ knitr::opts_chunk$set(echo = TRUE)
 
 <br>
 <br>
+
 ### 9.1 Setting the title of a graph
+
 <br>
 
 <br>
+
 `ggtitle()`은 `labs(title = ...)`과 동일함  
+
 <br>
+
 ```{r fig_9_1}
 fig_9011 <- 
   heightweight %>% 
@@ -40,8 +47,11 @@ fig_9011 + fig_9012
 
 
 <br>
+
 title을 plotting area 내부로 넣고 싶을 때는 아래와 같이 방법을 사용 가능    
+
 <br>
+
 ```{r fig_9_2}
 fig_9021 <- 
   heightweight %>% 
@@ -66,10 +76,13 @@ fig_9021 + fig_9022
 
 <br>
 <br>
+
 ### 9.2 Changing the apperance of text
+
 <br>
 
 <br>
+
 ```{r fig_9_3}
 fig_9031 <- 
   heightweight %>% 
@@ -111,10 +124,13 @@ fig_9031 + fig_9032 + fig_9033 + fig_9034
 
 <br>
 <br>
+
 ### 9.3 Using themes
+
 <br>
 
 <br>
+
 ```{r fig_9_5}
 fig_9051 <- 
   heightweight %>% 
@@ -135,10 +151,13 @@ fig_9051 + fig_9052
 
 <br>
 <br>
+
 ### 9.4 Changing the apperance of theme elements
+
 <br>
 
 <br>
+
 ```{r fig_9_6}
 fig_9061 <- 
   heightweight %>% 
@@ -196,6 +215,7 @@ fig_9064 <-
 
 
 <br>
+
 ```{r}
 fig_9065 <- 
   heightweight %>% 
@@ -220,10 +240,13 @@ fig_9065 + fig_9066
 
 <br>
 <br>
+
 ### 9.5 Creating your own themes
+
 <br>
 
 <br>
+
 ```{r}
 mytheme <- 
   theme_bw() +
@@ -243,10 +266,13 @@ heightweight %>%
 
 <br>
 <br>
+
 ### 9.6 Hiding grid lines
+
 <br>
 
 <br>
+
 ```{r fig_9_8}
 fig_9081 <- 
   heightweight %>% 
